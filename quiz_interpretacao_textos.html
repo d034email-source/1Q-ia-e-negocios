@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz · Interpretação e Produção de Textos · UNIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #ffffff;
+    --cream: #fafaf8;
+    --accent: #c0392b;
+    --accent-light: #f8ecea;
+    --gold: #d4a017;
+    --gold-light: #fdf6e0;
+    --sage: #2d6a4f;
+    --sage-light: #e8f4ee;
+    --mid: #6b7280;
+    --border: #e5e7eb;
+    --shadow: rgba(26,26,46,0.10);
+    --easy-color: #2d6a4f;
+    --easy-bg: #e8f4ee;
+    --medium-color: #b45309;
+    --medium-bg: #fef3c7;
+    --hard-color: #c0392b;
+    --hard-bg: #f8ecea;
+    --radius: 14px;
+    --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─── */
+  .site-header {
+    background: var(--ink);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 28px,
+      rgba(255,255,255,0.03) 28px,
+      rgba(255,255,255,0.03) 29px
+    );
+  }
+  .header-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  .site-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .site-header .subtitle {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* ─── CONTROLS ─── */
+  .controls-bar {
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  .controls-bar label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .filter-group {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--paper);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+  }
+  .filter-btn:hover { border-color: var(--ink); }
+  .filter-btn.active-all { background: var(--ink); color: white; border-color: var(--ink); }
+  .filter-btn.active-easy { background: var(--easy-color); color: white; border-color: var(--easy-color); }
+  .filter-btn.active-medium { background: var(--medium-color); color: white; border-color: var(--medium-color); }
+  .filter-btn.active-hard { background: var(--hard-color); color: white; border-color: var(--hard-color); }
+  .mode-toggle {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--mid);
+  }
+  .toggle-switch {
+    width: 38px; height: 20px;
+    background: var(--border);
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .toggle-switch.on { background: var(--ink); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: white;
+    transition: transform var(--transition);
+  }
+  .toggle-switch.on::after { transform: translateX(18px); }
+
+  /* ─── PROGRESS ─── */
+  .progress-wrap {
+    background: var(--paper);
+    padding: 1rem 2rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--mid);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .progress-bar-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ink), var(--accent));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ─── QUIZ CONTENT ─── */
+  .quiz-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* ─── QUESTION CARD ─── */
+  .question-card {
+    background: var(--paper);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+    animation: cardIn 0.35s ease both;
+  }
+  .question-card:hover { box-shadow: 0 4px 24px var(--shadow); }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+  }
+  .q-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--mid);
+  }
+  .diff-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+  .diff-badge.easy { background: var(--easy-bg); color: var(--easy-color); }
+  .diff-badge.medium { background: var(--medium-bg); color: var(--medium-color); }
+  .diff-badge.hard { background: var(--hard-bg); color: var(--hard-color); }
+  .type-tag {
+    margin-left: auto;
+    font-size: 0.68rem;
+    color: var(--mid);
+    font-weight: 500;
+    background: var(--border);
+    padding: 0.18rem 0.55rem;
+    border-radius: 4px;
+  }
+
+  .card-body { padding: 1.25rem; }
+  .question-text {
+    font-size: 0.98rem;
+    font-weight: 500;
+    line-height: 1.65;
+    margin-bottom: 1.2rem;
+    color: var(--ink);
+  }
+
+  /* ─── OPTIONS ─── */
+  .options { display: flex; flex-direction: column; gap: 0.55rem; }
+
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--paper);
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    line-height: 1.55;
+    width: 100%;
+  }
+  .option-btn:not(.answered):hover {
+    border-color: var(--ink);
+    background: var(--cream);
+  }
+  .option-letter {
+    min-width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--border);
+    color: var(--mid);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-btn.correct {
+    border-color: var(--sage);
+    background: var(--sage-light);
+  }
+  .option-btn.correct .option-letter {
+    background: var(--sage);
+    color: white;
+  }
+  .option-btn.wrong {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+  .option-btn.wrong .option-letter {
+    background: var(--accent);
+    color: white;
+  }
+  .option-btn.answered { cursor: default; }
+
+  /* VF buttons */
+  .vf-group { display: flex; gap: 0.75rem; }
+  .vf-btn {
+    flex: 1;
+    padding: 0.85rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--paper);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--ink);
+  }
+  .vf-btn:not(.answered):hover { border-color: var(--ink); background: var(--cream); }
+  .vf-btn.correct { border-color: var(--sage); background: var(--sage-light); color: var(--sage); }
+  .vf-btn.wrong { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .vf-btn.answered { cursor: default; }
+
+  /* ─── FEEDBACK ─── */
+  .feedback {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .feedback.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .feedback.correct-fb {
+    background: var(--sage-light);
+    border-left: 3px solid var(--sage);
+    color: #1a3a2b;
+  }
+  .feedback.wrong-fb {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    color: #4a1515;
+  }
+  .feedback strong { display: block; margin-bottom: 0.25rem; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ─── RESULT PANEL ─── */
+  #result-panel {
+    display: none;
+    background: var(--paper);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    animation: cardIn 0.4s ease both;
+  }
+  .result-hero {
+    background: var(--ink);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .result-label {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.65);
+    margin-top: 0.5rem;
+  }
+  .result-pct {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 0.4rem;
+    color: white;
+  }
+  .result-body { padding: 2rem; }
+  .breakdown-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .breakdown-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    width: 90px;
+    flex-shrink: 0;
+  }
+  .breakdown-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .breakdown-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.7s ease 0.2s;
+  }
+  .fill-easy { background: var(--easy-color); }
+  .fill-medium { background: var(--medium-color); }
+  .fill-hard { background: var(--hard-color); }
+  .fill-topic { background: var(--ink); }
+  .breakdown-pct {
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: 36px;
+    text-align: right;
+    color: var(--mid);
+  }
+  .recommend-box {
+    background: var(--gold-light);
+    border: 1px solid #e9d06a;
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #5a3e00;
+  }
+  .recommend-box strong { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; color: #8a6200; }
+  .review-section { margin-top: 2rem; }
+  .review-section .breakdown-title { margin-top: 0; }
+  .review-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.9rem;
+    background: var(--cream);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+  .review-q { font-weight: 600; margin-bottom: 0.5rem; }
+  .review-correct { color: var(--sage); font-size: 0.82rem; margin-top: 0.35rem; }
+  .review-explain { color: var(--mid); font-size: 0.82rem; margin-top: 0.3rem; }
+  .btn-restart {
+    display: block;
+    margin: 1.5rem auto 0;
+    padding: 0.85rem 2.5rem;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.02em;
+  }
+  .btn-restart:hover { background: var(--accent); transform: translateY(-1px); }
+
+  /* ─── EMPTY STATE ─── */
+  #empty-state {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--mid);
+  }
+  #empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  #empty-state p { font-size: 0.9rem; }
+
+  @media (max-width: 600px) {
+    .site-header { padding: 1.5rem 1rem 1.2rem; }
+    .controls-bar { padding: 0.8rem 1rem; gap: 0.6rem; }
+    .quiz-container { padding: 1.2rem 1rem; }
+    .result-score { font-size: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="header-eyebrow">UNIP · Prof.ª Tânia Sandroni</p>
+  <h1>Interpretação e Produção de Textos</h1>
+  <p class="subtitle">Quiz de Revisão · 30 Questões</p>
+  <div class="header-meta">
+    <span class="meta-pill">📖 9 Fáceis</span>
+    <span class="meta-pill">📘 12 Médias</span>
+    <span class="meta-pill">🔴 9 Difíceis</span>
+    <span class="meta-pill">⚠️ 5 Pegadinhas</span>
+  </div>
+</header>
+
+<div class="controls-bar">
+  <label>Filtrar:</label>
+  <div class="filter-group">
+    <button class="filter-btn active-all" onclick="setFilter('all',this)">Todas</button>
+    <button class="filter-btn" onclick="setFilter('easy',this)">Fácil</button>
+    <button class="filter-btn" onclick="setFilter('medium',this)">Médio</button>
+    <button class="filter-btn" onclick="setFilter('hard',this)">Difícil</button>
+  </div>
+  <div class="mode-toggle" onclick="toggleShuffle()">
+    <div class="toggle-switch" id="shuffle-switch"></div>
+    <span id="shuffle-label">Sequencial</span>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-stats">
+    <span id="answered-count">0 respondidas</span>
+    <span id="correct-count">✓ 0 corretas</span>
+  </div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="quiz-container">
+  <div id="questions-container"></div>
+  <div id="empty-state">
+    <div class="empty-icon">📂</div>
+    <p>Nenhuma questão corresponde ao filtro selecionado.</p>
+  </div>
+  <div id="result-panel"></div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ─── FÁCIL (9) ───
+  {
+    id: 1, diff: 'easy', type: 'Definição',
+    topic: 'Conceito de Texto',
+    text: 'De acordo com a etimologia da palavra, "texto" vem do particípio do verbo latino <em>tecere</em>. O que essa origem revela sobre a natureza do texto?',
+    options: [
+      'O texto é sempre escrito, pois "tecer" remete ao trabalho manual artesanal.',
+      'O texto é um tecido, resultado do entrelaçamento de elementos que se combinam em uma forma definida.',
+      'O texto é uma construção abstrata que existe independentemente de quem o produz.',
+      'O texto equivale apenas à produção verbal, oral ou escrita, de um falante.'
+    ],
+    correct: 1,
+    explain: 'Segundo o livro-texto, "texto vem do particípio do verbo em latim tecere, que significa tecer ou construir", revelando que o texto é um tecido, resultado do entrelaçamento de elementos.'
+  },
+  {
+    id: 2, diff: 'easy', type: 'Definição',
+    topic: 'Tipos de Linguagem',
+    text: 'Segundo o livro-texto, qual é a diferença entre "língua" e "linguagem"?',
+    options: [
+      'Língua e linguagem são sinônimos perfeitos, ambos referindo-se ao mesmo sistema de comunicação.',
+      'Linguagem é um tipo de língua, sendo a língua o conceito mais abrangente.',
+      'Língua é um tipo de linguagem; é um sistema de representação socialmente construído, constituído por signos verbais.',
+      'Língua refere-se apenas à comunicação oral, enquanto linguagem inclui também a comunicação escrita.'
+    ],
+    correct: 2,
+    explain: 'O livro explica: "língua é um tipo de linguagem. Língua é um sistema de representação socialmente construído, constituído por signos verbais." A linguagem é o conceito mais amplo.'
+  },
+  {
+    id: 3, diff: 'easy', type: 'Definição',
+    topic: 'Compreender vs Interpretar',
+    text: 'Qual é a relação correta entre compreender e interpretar um texto, segundo o livro-texto?',
+    options: [
+      'É possível interpretar um texto sem necessariamente tê-lo compreendido.',
+      'Compreender e interpretar são processos idênticos, usados como sinônimos no contexto acadêmico.',
+      'É possível compreender um texto sem ser capaz de interpretá-lo, mas não é possível interpretá-lo sem compreendê-lo.',
+      'A interpretação corresponde à decodificação literal das informações; a compreensão depende de elementos extratextuais.'
+    ],
+    correct: 2,
+    explain: 'O texto é claro: "é possível compreender um texto e não ser capaz de interpretá-lo, mas não é possível interpretá-lo sem compreendê-lo." Compreender é a primeira etapa (decodificação); interpretar vai além.'
+  },
+  {
+    id: 4, diff: 'easy', type: 'Definição',
+    topic: 'Figuras de Linguagem',
+    text: 'O eufemismo é definido no livro como uma figura de linguagem. Qual é sua característica principal?',
+    options: [
+      'Exagerar no enunciado para ampliar sua dimensão expressiva.',
+      'Suavizar alguma afirmação desagradável.',
+      'Estabelecer uma comparação implícita entre elementos de naturezas diferentes.',
+      'Usar o sentido oposto ao que se pretende comunicar.'
+    ],
+    correct: 1,
+    explain: 'O livro define: "Eufemismo é uma figura de linguagem que se caracteriza por suavizar alguma afirmação desagradável."'
+  },
+  {
+    id: 5, diff: 'easy', type: 'Definição',
+    topic: 'Intertextualidade',
+    text: 'O que é intertextualidade, segundo o livro-texto?',
+    options: [
+      'A presença de informações implícitas dentro de um texto que só podem ser percebidas por leitores experientes.',
+      'A relação entre textos, isto é, a referência direta ou indireta de um texto a outros.',
+      'O processo de simplificação de textos complexos para torná-los mais acessíveis ao público.',
+      'O conjunto de elementos linguísticos que conferem coesão a um texto.'
+    ],
+    correct: 1,
+    explain: 'Segundo o livro: "Denomina-se intertextualidade a relação entre textos, isto é, a referência direta ou indireta de um texto a outros. Trata-se de um diálogo entre textos."'
+  },
+  {
+    id: 6, diff: 'easy', type: 'Reconhecimento',
+    topic: 'Signos (Peirce)',
+    text: 'Charles Peirce, filósofo e fundador da Semiótica, classificou os signos não verbais em três categorias. Quais são elas?',
+    options: [
+      'Signos verbais, não verbais e híbridos.',
+      'Signos conotativos, denotativos e metafóricos.',
+      'Ícones, índices e símbolos.',
+      'Imagens, palavras e gestos.'
+    ],
+    correct: 2,
+    explain: 'Segundo o livro: "Charles Peirce, filósofo e fundador da Semiótica, considerava que os signos não verbais podem ser classificados de acordo com a relação que estabelecem com seus referentes em ícones, índices e símbolos."'
+  },
+  {
+    id: 7, diff: 'easy', type: 'Verdadeiro ou Falso',
+    topic: 'Texto e Linguagem',
+    vf: true,
+    text: 'VERDADEIRO ou FALSO: Segundo o livro-texto, uma imagem, uma fala e uma representação de mímica também são consideradas texto, pois a definição de texto abrange toda forma de expressão de ideias.',
+    vfAnswer: true,
+    explain: 'VERDADEIRO. O livro afirma: "Consideramos texto toda forma de expressão de ideias. De acordo com essa concepção, uma imagem é um texto, assim como uma fala ou mesmo uma representação de mímica."'
+  },
+  {
+    id: 8, diff: 'easy', type: 'Reconhecimento',
+    topic: 'Gêneros Textuais',
+    text: 'Qual é a principal diferença entre "notícia" e "reportagem" no jornalismo, segundo o livro-texto?',
+    options: [
+      'A notícia é sempre publicada em jornais impressos; a reportagem, apenas em revistas.',
+      'A notícia segue um formato preestabelecido com informações principais no início e foco no factual; a reportagem contextualiza melhor o tema e tem texto mais autoral.',
+      'A notícia apresenta o ponto de vista do repórter; a reportagem é sempre objetiva e imparcial.',
+      'A notícia é mais extensa e analítica; a reportagem é breve e factual.'
+    ],
+    correct: 1,
+    explain: 'O livro distingue: "A notícia é um texto que segue um formato preestabelecido, em que as informações principais vêm no início, e seu foco é no factual. A reportagem procura contextualizar melhor o tema [...], seu texto é mais autoral, menos engessado."'
+  },
+  {
+    id: 9, diff: 'easy', type: 'Definição',
+    topic: 'Tipos de Linguagem',
+    text: 'Um texto que utiliza simultaneamente linguagem verbal e não verbal é denominado:',
+    options: [
+      'Temático',
+      'Sincrético ou híbrido',
+      'Figurativo',
+      'Inferencial'
+    ],
+    correct: 1,
+    explain: 'Segundo o livro: "como vimos, um texto pode utilizar somente linguagem verbal, somente linguagem não verbal ou misturar as duas, sendo assim denominado sincrético ou híbrido."'
+  },
+
+  // ─── MÉDIO (12) ───
+  {
+    id: 10, diff: 'medium', type: 'Diferenciação',
+    topic: 'Informações Implícitas',
+    text: 'Qual é a diferença entre "pressuposto" e "subentendido" no contexto das informações implícitas?',
+    options: [
+      'O pressuposto é uma mensagem explícita no texto; o subentendido é uma mensagem ausente e irrelevante para a interpretação.',
+      'O pressuposto está marcado por algum elemento linguístico no texto; o subentendido é sugerido apenas pelo contexto e o emissor pode negá-lo.',
+      'O pressuposto é exclusivo de textos orais; o subentendido ocorre apenas em textos escritos.',
+      'O pressuposto e o subentendido são equivalentes, referindo-se às informações não explicitadas no texto.'
+    ],
+    correct: 1,
+    explain: 'O livro distingue: "As mensagens implícitas podem estar marcadas pelo uso de algum elemento linguístico [...]. No primeiro caso, falamos em pressupostos. No segundo [quando sugeridas pelo contexto], em subentendidos." O subentendido pode ser negado pelo emissor.'
+  },
+  {
+    id: 11, diff: 'medium', type: 'Diferenciação',
+    topic: 'Texto e Linguagem',
+    text: 'De acordo com o livro, qual é a diferença entre textos "temáticos" e "figurativos"?',
+    options: [
+      'Textos temáticos tratam de assuntos polêmicos; textos figurativos abordam temas neutros.',
+      'Textos temáticos trabalham essencialmente com conceitos abstratos; textos figurativos privilegiam os elementos concretos.',
+      'Textos temáticos são exclusivamente verbais; textos figurativos são exclusivamente não verbais.',
+      'Textos temáticos são opinativos; textos figurativos são expositivos.'
+    ],
+    correct: 1,
+    explain: 'O livro define: "Chamamos de temáticos os textos que trabalham essencialmente com conceitos abstratos e de figurativos aqueles que privilegiam os elementos concretos." Ex.: "A persistência leva ao êxito" (temático) vs. "Água mole em pedra dura tanto bate até que fura" (figurativo).'
+  },
+  {
+    id: 12, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Figuras de Linguagem',
+    text: 'Na crônica "<em>A última crônica</em>", de Fernando Sabino, o cronista explica sua própria função: "recolher da vida diária algo de seu disperso conteúdo humano". Esse procedimento, em que a linguagem é usada para tratar de si mesma ou de seu processo de criação, é chamado de:',
+    options: [
+      'Intertextualidade',
+      'Interdiscursividade',
+      'Metalinguagem',
+      'Paráfrase'
+    ],
+    correct: 2,
+    explain: 'O livro explica: "Metalinguagem é o uso da linguagem para tratar dela mesma. No caso, temos uma crônica que menciona seu processo de produção."'
+  },
+  {
+    id: 13, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Intertextualidade',
+    text: 'No capítulo sobre intertextualidade, o livro distingue paródia de paráfrase. Qual das alternativas descreve corretamente a PARÓDIA?',
+    options: [
+      'A apresentação das ideias de um texto com forma de expressão autoral, sem alterar o sentido original.',
+      'A produção de um texto apoiado em outro para alterar o conteúdo original, normalmente com intenção de humor.',
+      'A citação literal de um texto dentro de outro para conferir credibilidade ao argumento.',
+      'A referência implícita a um texto sem que o leitor precise conhecê-lo para interpretar o novo texto.'
+    ],
+    correct: 1,
+    explain: 'O livro define: "Paródia é a produção de um texto apoiado em outro (intertextualidade) para alterar o conteúdo original. A paródia é construída, portanto, por meio da modificação do conteúdo do texto original, normalmente com a intenção de provocar humor."'
+  },
+  {
+    id: 14, diff: 'medium', type: 'Diferenciação',
+    topic: 'Textos Argumentativos',
+    text: 'O livro-texto distingue os verbos "persuadir" e "convencer". Qual é a diferença entre eles, segundo o texto?',
+    options: [
+      'Persuadir é convencer por meio de argumentos racionais; convencer é induzir alguém a agir sem argumentos sólidos.',
+      'Persuadir e convencer são sinônimos perfeitos no contexto da argumentação retórica.',
+      'Persuadir é induzir alguém a agir de determinada forma; convencer é fazer alguém aceitar um ponto de vista por meio de argumentos racionais.',
+      'Persuadir refere-se à argumentação escrita; convencer refere-se à argumentação oral.'
+    ],
+    correct: 2,
+    explain: 'Segundo o livro: "persuadir significa induzir alguém a agir de determinada forma, e convencer diz respeito a fazer com que alguém aceite, de fato, determinado ponto de vista por meio de argumentos racionais."'
+  },
+  {
+    id: 15, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Contexto Histórico-Social',
+    text: 'A música <em>O bêbado e a equilibrista</em>, de João Bosco e Aldir Blanc (1979), menciona "o irmão do Henfil" e "o mata-borrão do céu". Para compreender esses elementos, o leitor precisa saber que a música foi composta durante:',
+    options: [
+      'O período da Semana de Arte Moderna de 1922, marcado pela efervescência cultural.',
+      'A ditadura militar brasileira, em que artistas e intelectuais foram exilados e a expressão artística foi censurada.',
+      'O período da redemocratização da década de 1990, quando o Brasil vivia a abertura política.',
+      'A era do rádio nos anos 1940, quando músicos populares compunham sob censura do Estado Novo.'
+    ],
+    correct: 1,
+    explain: 'O livro contextualiza: "A composição de João Bosco e Aldir Blanc, lançada em 1979, no período da ditadura militar, é um exemplo da importância do contexto na interpretação de um texto." As referências ao exílio e à repressão só fazem sentido nesse contexto histórico.'
+  },
+  {
+    id: 16, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Fala vs Escrita',
+    text: 'No quadro comparativo entre fala e escrita apresentado no livro, qual característica pertence ESPECIFICAMENTE à escrita?',
+    options: [
+      'Possibilidade de reformulação a partir das reações do interlocutor.',
+      'Uso frequente de gírias e palavras pouco precisas.',
+      'Frases incompletas ou com termos sem função sintática definida.',
+      'Preocupação com a precisão e adequação vocabular e com a organização sintática.'
+    ],
+    correct: 3,
+    explain: 'De acordo com o Quadro 3 do livro, a escrita se caracteriza por "preocupação com a organização sintática das orações e períodos" e "preocupação com a precisão e adequação vocabular". As demais características pertencem à fala.'
+  },
+  {
+    id: 17, diff: 'medium', type: 'Verdadeiro ou Falso',
+    topic: 'Textos Literários',
+    vf: true,
+    text: 'VERDADEIRO ou FALSO: Segundo Paul Valéry, citado no livro, o texto literário pode ser resumido sem perda significativa de sua essência, pois o conteúdo (o enredo e os personagens) é mais relevante do que a forma de expressão.',
+    vfAnswer: false,
+    explain: 'FALSO. O livro cita Paul Valéry indicando exatamente o contrário: "o literário não pode ser resumido sem perder sua essência, pois a forma tem tanta relevância quanto o conteúdo." Resumir uma obra literária faz perder seu valor estético.'
+  },
+  {
+    id: 18, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Signos (Peirce)',
+    text: 'Uma placa de talheres à beira de uma estrada indicando a presença de um restaurante é um exemplo de qual tipo de signo, segundo Peirce?',
+    options: [
+      'Ícone, pois há semelhança visual direta entre os talheres e a função do restaurante.',
+      'Símbolo, pois a relação entre o signo e o referente é arbitrária e convencionada socialmente.',
+      'Índice, pois o signo apresenta uma relação de contiguidade ou causalidade com o referente.',
+      'Signo verbal, pois transmite uma mensagem clara e objetiva ao receptor.'
+    ],
+    correct: 2,
+    explain: 'O livro explica: "Os índices são indícios, isto é, apresentam uma relação de contiguidade ou de causalidade com o referente. Por exemplo, [...] Uma placa com talheres à beira da estrada indica a proximidade de um restaurante."'
+  },
+  {
+    id: 19, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Texto e Linguagem',
+    text: 'O livro cita a frase de Wittgenstein: "Os limites da minha linguagem são os limites do meu mundo." O que isso significa no contexto do livro?',
+    options: [
+      'Quem conhece mais idiomas tem maior domínio sobre o mundo material e seus recursos.',
+      'O domínio sobre a linguagem está intimamente relacionado à nossa compreensão e conhecimento da realidade.',
+      'A linguagem é uma prisão que limita o pensamento humano e impede a criatividade.',
+      'O vocabulário de uma pessoa determina exclusivamente sua capacidade de comunicação oral.'
+    ],
+    correct: 1,
+    explain: 'O livro contextualiza Wittgenstein: "o nosso domínio sobre a linguagem está intimamente relacionado à nossa compreensão e conhecimento da realidade. Podemos dizer que só apreendemos bem aquilo que sabemos nomear ou representar de alguma forma."'
+  },
+  {
+    id: 20, diff: 'medium', type: 'Aplicação situacional',
+    topic: 'Textos Argumentativos',
+    text: 'No artigo <em>O direito à tristeza</em>, de Contardo Calligaris, o autor formula sua tese no oitavo parágrafo. Qual é essa tese?',
+    options: [
+      'A depressão infantil é uma doença grave que deve ser tratada com medicamentos e terapia.',
+      'Os adultos projetam sua necessidade de felicidade nas crianças, tornando-as incapazes de expressar sentimentos.',
+      'Uma criança tem o direito de estar triste, pois ela tem vida própria e não é um objeto destinado a consolar os adultos.',
+      'A infância é naturalmente um período feliz e livre de preocupações, protegido da vida adulta.'
+    ],
+    correct: 2,
+    explain: 'O livro identifica a tese de Calligaris: "O mais urgente, para seu bem, é reconhecer que uma criança tem o DIREITO de estar triste, porque ela não é apenas um boneco cuja euforia deve nos consolar das perdas e danos de nossa existência; ela tem vida própria."'
+  },
+  {
+    id: 21, diff: 'medium', type: 'Diferenciação',
+    topic: 'Textos Argumentativos',
+    text: 'Segundo o livro-texto, qual é a diferença entre "opinião" e "argumento"?',
+    options: [
+      'Opinião é fundamentada em dados e referências; argumento é uma afirmação pessoal que não precisa de embasamento.',
+      'Opinião não necessita de comprovação ou embasamento; argumento exige referências, informações e dados para sustentar um posicionamento.',
+      'Opinião é sempre expressa de forma oral; argumento ocorre exclusivamente em textos escritos formais.',
+      'Opinião e argumento são sinônimos, pois ambos expressam um ponto de vista sobre um tema.'
+    ],
+    correct: 1,
+    explain: 'O livro distingue: "Opinião não necessita de comprovação ou embasamento." Já o argumento: "é necessário que ela apresente referências, informações e dados que sustentem o posicionamento." Exemplo do livro: gostar de doce de banana é opinião; defender a legalização do aborto exige argumentos.'
+  },
+
+  // ─── DIFÍCIL (9, incluindo 5 pegadinhas) ───
+  {
+    id: 22, diff: 'hard', type: 'Análise Crítica',
+    topic: 'Intertextualidade',
+    text: 'O livro distingue "intertextualidade" de "interdiscursividade". Em qual situação ocorre a interdiscursividade, mas NÃO necessariamente a intertextualidade com um texto específico?',
+    options: [
+      'Quando um anúncio publicitário cita explicitamente um poema de Drummond.',
+      'Quando uma charge reproduz um trecho de uma música de Chico Buarque.',
+      'Quando uma revista paródia uma capa específica da Veja de 2005.',
+      'Quando uma capa de revista "Claudio" dialoga com o discurso da revista feminina sem fazer referência a uma edição específica.'
+    ],
+    correct: 3,
+    explain: 'O livro explica: "Muitas vezes, uma paródia não se constrói com base em um texto específico, mas, sim, em relação a características consagradas de um gênero. Cabe, por isso, a discussão sobre interdiscursividade." A capa "Claudio" parodia o discurso presente na publicação feminina, não uma edição específica.'
+  },
+  {
+    id: 23, diff: 'hard', type: 'Pegadinha',
+    topic: 'Signos (Peirce)',
+    text: '⚠️ PEGADINHA — O livro afirma que "um mesmo signo pode ser um ícone, um índice ou um símbolo, dependendo do texto." Considerando isso, o desenho de uma cruz usada apenas para representar visualmente a forma de uma cruz (sem conotação religiosa ou histórica) seria classificado como:',
+    options: [
+      'Símbolo, pois a cruz tem uma relação arbitrária e convencional com a fé cristã em qualquer contexto.',
+      'Índice, pois a cruz indica a presença de uma instituição religiosa nas proximidades.',
+      'Ícone, pois representa aquilo com o que tem semelhança — a forma de uma cruz.',
+      'Signo híbrido, pois combina características de ícone e símbolo simultaneamente.'
+    ],
+    correct: 2,
+    explain: 'O livro usa exatamente este exemplo: "Podemos pensar, por exemplo, no desenho de uma cruz. Ele pode ser um ícone se estiver representando apenas uma cruz [...]. A classificação depende do texto em que aparece, não de uma categoria fixa.'
+  },
+  {
+    id: 24, diff: 'hard', type: 'Justificativa',
+    topic: 'Textos Literários',
+    text: 'No conto <em>A quinta história</em>, de Clarice Lispector, a narradora se identifica com as baratas em vários momentos. Qual trecho do livro comprova mais diretamente essa identificação?',
+    options: [
+      '"Meticulosa, ardente, eu aviava o elixir da longa morte"',
+      '"para baratas espertas como eu, espalhei habilmente o pó"',
+      '"Agora, aos que alcançam vê-lo, todo o ar de um defunto"',
+      '"Sou a primeira testemunha do alvorecer em Pompeia"'
+    ],
+    correct: 1,
+    explain: 'O livro destaca: "A identificação entre a personagem e as baratas aparece explicitamente desde a segunda história: \'para baratas espertas como eu, espalhei habilmente o pó\'." Esta é a marca mais direta de projeção do "eu no outro" no texto.'
+  },
+  {
+    id: 25, diff: 'hard', type: 'Pegadinha',
+    topic: 'Gráficos e Tabelas',
+    text: '⚠️ PEGADINHA — Analisando a Tabela de participação das regiões no PIB (2002–2011), o livro alerta para uma "pegadinha" na afirmativa IV: "entre 2010 e 2011, houve crescimento econômico em apenas duas regiões". Por que essa afirmativa é INCORRETA, mesmo que Norte e Centro-Oeste tenham aumentado sua participação?',
+    options: [
+      'Porque o gráfico mostra que todas as regiões cresceram igualmente no período.',
+      'Porque a tabela trabalha apenas com valores relativos (percentuais), e não com valores absolutos, então não é possível afirmar que houve crescimento econômico real.',
+      'Porque a afirmativa confunde Norte com Nordeste, que é a região que cresceu no período.',
+      'Porque o PIB brasileiro caiu de 2010 para 2011, o que significa que nenhuma região cresceu.'
+    ],
+    correct: 1,
+    explain: 'O livro explica: "A última afirmativa apresenta uma pegadinha. [...] não podemos afirmar que houve crescimento econômico nessas regiões, pois não sabemos os valores absolutos dos PIBs. Como a tabela trabalha apenas com valores relativos, pode ser que o PIB de 2011 tenha sido menor do que o de 2010."'
+  },
+  {
+    id: 26, diff: 'hard', type: 'Conexões',
+    topic: 'Textos Literários',
+    text: 'No conto <em>Desenredo</em>, de Guimarães Rosa, o personagem Jó Joaquim "opera o passado" para que sua ex-mulher seja considerada inocente. O título do conto carrega um duplo sentido. Qual é ele?',
+    options: [
+      '"Desenredo" refere-se ao desfecho final de uma narrativa e ao processo de desfazer o enredo real por meio de uma narrativa reescrita.',
+      '"Desenredo" significa apenas o desenlace da história, indicando que o narrador não conhecia todos os fatos.',
+      '"Desenredo" é um neologismo criado por Guimarães Rosa sem relação com a estrutura narrativa do conto.',
+      '"Desenredo" alude ao comportamento contraditório da mulher, que muda de nome em cada relacionamento.'
+    ],
+    correct: 0,
+    explain: 'O livro explica: "\'Desenredo\' significa desfecho, desenlace, mas, nesse caso, também deve ser compreendido como o desfazimento de um enredo. O prefixo des- indica que o enredo [...] será desfeito. É justamente isso que Jó Joaquim realiza: o processo de operar o passado, modificando-o."'
+  },
+  {
+    id: 27, diff: 'hard', type: 'Pegadinha',
+    topic: 'Texto e Linguagem',
+    text: '⚠️ PEGADINHA — O livro apresenta o exemplo: "Os sem-terra invadiram 100 fazendas neste ano" e "Os sem-terra invadiram <em>só</em> 100 fazendas <em>neste ano</em>." Qual das afirmativas abaixo é CORRETA sobre o efeito do advérbio "só"?',
+    options: [
+      'O advérbio "só" não altera o sentido, pois é apenas um elemento de ênfase sem valor semântico.',
+      'Quando "só" vem antes do número, indica que a quantidade é alta; quando vem antes de "neste ano", indica que a quantidade é baixa.',
+      'Quando "só" vem antes do número, o enunciador considera baixa a quantidade; quando vem antes de "neste ano", a quantidade é considerada alta (pois contabiliza apenas um período).',
+      'O advérbio "só" indica sempre que o enunciador considera o número insatisfatório, independentemente de sua posição na frase.'
+    ],
+    correct: 2,
+    explain: 'O livro especifica: "Se ela vem antes do número, temos a impressão de que o enunciador considera baixa a quantidade de fazendas invadidas. Se ela vem antes de \'neste ano\', significa que essa quantidade foi alta, pois o número contabiliza apenas os dados desse período." A inversão é a pegadinha clássica desta questão.'
+  },
+  {
+    id: 28, diff: 'hard', type: 'Análise Crítica',
+    topic: 'Contexto Histórico-Social',
+    text: 'O livro analisa a música <em>Como nossos pais</em>, de Belchior (1976), afirmando que o verso "Ainda somos os mesmos e vivemos como nossos pais" pode ser mal interpretado se tirado de contexto. Qual é a interpretação CORRETA, segundo o livro?',
+    options: [
+      'O verso celebra a permanência de valores familiares positivos transmitidos de geração em geração.',
+      'O verso revela a desilusão de uma juventude que lutou contra o regime ditatorial e percebe que reproduziu os mesmos valores que combateu.',
+      'O verso expressa a nostalgia do compositor pelos tempos de sua infância no sertão nordestino.',
+      'O verso é uma crítica direta ao governo militar, comparando seus líderes com a geração anterior de políticos conservadores.'
+    ],
+    correct: 1,
+    explain: 'O livro contextualiza: "a música, lançada em 1976, no período da ditadura militar brasileira, revela a desilusão de uma juventude que lutou contra o regime, o sistema e a moral da época e que se percebe, no final, como reprodutora dos valores que combateu."'
+  },
+  {
+    id: 29, diff: 'hard', type: 'Pegadinha',
+    topic: 'Intertextualidade',
+    text: '⚠️ PEGADINHA — O livro analisa o capítulo "O vergalho", de <em>Memórias póstumas de Brás Cubas</em> (Machado de Assis). O narrador observa seu ex-escravo Prudêncio castigando um escravo que comprara. Qual afirmativa sobre o episódio é CORRETA?',
+    options: [
+      'Prudêncio age com crueldade por instinto, sem que isso guarde relação com o tratamento que recebeu do narrador.',
+      'O episódio mostra que Prudêncio, agora livre, reproduz o mesmo ciclo de violência ao qual foi submetido, tornando o oprimido em opressor — e ainda obedece às ordens do antigo senhor.',
+      'O narrador repreende Prudêncio e o episódio serve para mostrar a bondade de Brás Cubas, que se opõe à escravidão.',
+      'Machado de Assis usa o episódio para defender a tese de que a escravidão era aceita por todos os setores da sociedade brasileira.'
+    ],
+    correct: 1,
+    explain: 'O livro analisa: "O oprimido tornou-se, assim, opressor, descontando no seu escravo os castigos que havia recebido. Além disso, mesmo liberto, ele ainda obedece às ordens de seu antigo senhor [...]. O episódio mostra-nos um pouco da visão ácida do escritor acerca da natureza humana." A pegadinha está em confundir o episódio com uma defesa moral do narrador.'
+  },
+  {
+    id: 30, diff: 'hard', type: 'Pegadinha',
+    topic: 'Compreender vs Interpretar',
+    text: '⚠️ PEGADINHA — O livro afirma que "a interpretação é subjetiva" e "cada um entende um texto de um jeito" são afirmações corretas que justificam qualquer leitura de um texto. Essa visão está alinhada com o que o livro defende?',
+    options: [
+      'Sim, pois o livro afirma que a interpretação depende do repertório subjetivo do leitor, sendo todas as leituras igualmente válidas.',
+      'Sim, pois o livro explica que textos literários são polissêmicos, permitindo qualquer interpretação.',
+      'Não, pois o livro afirma que a interpretação não pode ser descolada dos elementos textuais: o indivíduo não pode interpretar apenas com base em suas ideias, ignorando o que está escrito.',
+      'Não, pois o livro defende que existe apenas uma interpretação correta para cada texto, fixada pelo autor no momento da criação.'
+    ],
+    correct: 2,
+    explain: 'O livro é explícito: "Claro que a interpretação depende do repertório do sujeito que recebe o texto [...]. No entanto, sua interpretação não pode ser descolada dos elementos textuais, ou seja, de sua compreensão. O indivíduo não pode, simplesmente, interpretar de acordo com as ideias que ele tem na cabeça." Esta é a pegadinha conceitual central do livro.'
+  }
+];
+
+// ─── STATE ───
+let shuffleMode = false;
+let currentFilter = 'all';
+let answered = {};
+let displayOrder = [];
+
+// ─── TOPIC GROUPS ───
+const TOPICS = [...new Set(QUESTIONS.map(q => q.topic))];
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.className = 'filter-btn';
+  });
+  btn.className = `filter-btn active-${f}`;
+  renderQuestions();
+}
+
+function toggleShuffle() {
+  shuffleMode = !shuffleMode;
+  const sw = document.getElementById('shuffle-switch');
+  const lbl = document.getElementById('shuffle-label');
+  sw.classList.toggle('on', shuffleMode);
+  lbl.textContent = shuffleMode ? 'Embaralhado' : 'Sequencial';
+  renderQuestions();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getFiltered() {
+  let qs = currentFilter === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.diff === currentFilter);
+  return shuffleMode ? shuffle(qs) : qs;
+}
+
+function diffLabel(d) {
+  return { easy: 'Fácil', medium: 'Médio', hard: 'Difícil' }[d];
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  const empty = document.getElementById('empty-state');
+  const result = document.getElementById('result-panel');
+  result.style.display = 'none';
+  const qs = getFiltered();
+  displayOrder = qs.map(q => q.id);
+
+  if (qs.length === 0) {
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    updateProgress();
+    return;
+  }
+  empty.style.display = 'none';
+
+  container.innerHTML = qs.map((q, idx) => renderCard(q, idx)).join('');
+  updateProgress();
+}
+
+function renderCard(q, idx) {
+  const letters = ['A', 'B', 'C', 'D'];
+  const state = answered[q.id];
+  let optionsHTML = '';
+
+  if (q.vf) {
+    const vTrue = state ? (q.vfAnswer === true ? (state.chosen === true ? 'correct' : '') : (state.chosen === true ? 'wrong' : '')) : '';
+    const vFalse = state ? (q.vfAnswer === false ? (state.chosen === false ? 'correct' : '') : (state.chosen === false ? 'wrong' : '')) : '';
+    const answeredClass = state ? 'answered' : '';
+    optionsHTML = `<div class="vf-group">
+      <button class="vf-btn ${vTrue} ${answeredClass}" onclick="answerVF(${q.id}, true, this)">Verdadeiro</button>
+      <button class="vf-btn ${vFalse} ${answeredClass}" onclick="answerVF(${q.id}, false, this)">Falso</button>
+    </div>`;
+  } else {
+    optionsHTML = `<div class="options">${q.options.map((opt, i) => {
+      let cls = '';
+      if (state) {
+        if (i === q.correct) cls = 'correct answered';
+        else if (i === state.chosen) cls = 'wrong answered';
+        else cls = 'answered';
+      }
+      return `<button class="option-btn ${cls}" onclick="answerQ(${q.id}, ${i}, this.closest('.options'))">
+        <span class="option-letter">${letters[i]}</span>
+        <span>${opt}</span>
+      </button>`;
+    }).join('')}</div>`;
+  }
+
+  const feedbackClass = state ? (state.correct ? 'correct-fb' : 'wrong-fb') : '';
+  const feedbackLabel = state ? (state.correct ? '✓ Correto!' : '✗ Resposta incorreta') : '';
+  const feedbackShow = state ? 'show' : '';
+
+  return `<div class="question-card" id="qcard-${q.id}">
+    <div class="card-header">
+      <span class="q-number">Q${idx + 1}</span>
+      <span class="diff-badge ${q.diff}">${diffLabel(q.diff)}</span>
+      <span class="type-tag">${q.type}</span>
+    </div>
+    <div class="card-body">
+      <p class="question-text">${q.text}</p>
+      ${optionsHTML}
+      <div class="feedback ${feedbackClass} ${feedbackShow}" id="fb-${q.id}">
+        <strong>${feedbackLabel}</strong>
+        ${q.explain}
+      </div>
+    </div>
+  </div>`;
+}
+
+function answerQ(qid, chosen, optionsEl) {
+  if (answered[qid]) return;
+  const q = QUESTIONS.find(x => x.id === qid);
+  const correct = chosen === q.correct;
+  answered[qid] = { chosen, correct };
+
+  optionsEl.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.add('answered');
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === chosen) btn.classList.add('wrong');
+  });
+
+  showFeedback(qid, correct);
+  updateProgress();
+  checkAllDone();
+}
+
+function answerVF(qid, chosen, clickedBtn) {
+  if (answered[qid]) return;
+  const q = QUESTIONS.find(x => x.id === qid);
+  const correct = chosen === q.vfAnswer;
+  answered[qid] = { chosen, correct };
+
+  const group = clickedBtn.closest('.vf-group');
+  group.querySelectorAll('.vf-btn').forEach(btn => {
+    btn.classList.add('answered');
+  });
+  if (chosen === q.vfAnswer) {
+    clickedBtn.classList.add('correct');
+  } else {
+    clickedBtn.classList.add('wrong');
+    // highlight correct
+    const btns = group.querySelectorAll('.vf-btn');
+    const correctVal = q.vfAnswer;
+    btns.forEach(btn => {
+      const btnVal = btn.textContent.trim() === 'Verdadeiro';
+      if (btnVal === correctVal) btn.classList.add('correct');
+    });
+  }
+
+  showFeedback(qid, correct);
+  updateProgress();
+  checkAllDone();
+}
+
+function showFeedback(qid, correct) {
+  const fb = document.getElementById(`fb-${qid}`);
+  if (!fb) return;
+  fb.classList.remove('correct-fb', 'wrong-fb');
+  fb.classList.add(correct ? 'correct-fb' : 'wrong-fb');
+  const q = QUESTIONS.find(x => x.id === qid);
+  fb.innerHTML = `<strong>${correct ? '✓ Correto!' : '✗ Resposta incorreta'}</strong>${q.explain}`;
+  fb.classList.add('show');
+}
+
+function updateProgress() {
+  const visible = displayOrder;
+  const answeredVisible = visible.filter(id => answered[id]);
+  const correctVisible = answeredVisible.filter(id => answered[id].correct);
+  const total = visible.length;
+  const done = answeredVisible.length;
+  const corr = correctVisible.length;
+
+  document.getElementById('answered-count').textContent = `${done} de ${total} respondidas`;
+  document.getElementById('correct-count').textContent = `✓ ${corr} corretas`;
+  const pct = total > 0 ? (done / total) * 100 : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function checkAllDone() {
+  const visible = displayOrder;
+  if (visible.length === 0) return;
+  const allDone = visible.every(id => answered[id]);
+  if (allDone) showResult();
+}
+
+function showResult() {
+  const visible = displayOrder;
+  const total = visible.length;
+  const correct = visible.filter(id => answered[id]?.correct).length;
+  const pct = Math.round((correct / total) * 100);
+
+  // by difficulty
+  const diffs = ['easy', 'medium', 'hard'];
+  const diffData = {};
+  diffs.forEach(d => {
+    const qs = visible.filter(id => QUESTIONS.find(q => q.id === id).diff === d);
+    const corr = qs.filter(id => answered[id]?.correct).length;
+    diffData[d] = { total: qs.length, correct: corr, pct: qs.length > 0 ? Math.round((corr / qs.length) * 100) : null };
+  });
+
+  // by topic
+  const topicData = {};
+  TOPICS.forEach(t => {
+    const qs = visible.filter(id => QUESTIONS.find(q => q.id === id).topic === t);
+    if (qs.length === 0) return;
+    const corr = qs.filter(id => answered[id]?.correct).length;
+    topicData[t] = { total: qs.length, correct: corr, pct: Math.round((corr / qs.length) * 100) };
+  });
+
+  // wrong questions
+  const wrong = visible.filter(id => answered[id] && !answered[id].correct);
+
+  // recommendations
+  const badTopics = Object.entries(topicData).filter(([t, d]) => d.pct < 60 && d.total >= 1);
+
+  let emoji = pct >= 80 ? '🏆' : pct >= 60 ? '📘' : '📖';
+  let msg = pct >= 80 ? 'Excelente desempenho!' : pct >= 60 ? 'Bom trabalho — ainda há tópicos para revisar.' : 'Continue praticando — revise os tópicos abaixo.';
+
+  const diffLabels = { easy: 'Fácil', medium: 'Médio', hard: 'Difícil' };
+  const diffColors = { easy: 'fill-easy', medium: 'fill-medium', hard: 'fill-hard' };
+
+  let diffHTML = diffs.map(d => {
+    if (diffData[d].pct === null) return '';
+    return `<div class="breakdown-row">
+      <span class="breakdown-label">${diffLabels[d]}</span>
+      <div class="breakdown-track"><div class="breakdown-fill ${diffColors[d]}" style="width:${diffData[d].pct}%"></div></div>
+      <span class="breakdown-pct">${diffData[d].pct}%</span>
+    </div>`;
+  }).join('');
+
+  let topicHTML = Object.entries(topicData).map(([t, d]) => {
+    return `<div class="breakdown-row">
+      <span class="breakdown-label" style="width:160px;font-size:0.76rem;">${t}</span>
+      <div class="breakdown-track"><div class="breakdown-fill fill-topic" style="width:${d.pct}%"></div></div>
+      <span class="breakdown-pct">${d.pct}%</span>
+    </div>`;
+  }).join('');
+
+  let recommendHTML = badTopics.length > 0 ? `<div class="recommend-box">
+    <strong>⚠️ Recomendação de revisão</strong>
+    Os seguintes tópicos estão abaixo de 60%: <strong>${badTopics.map(([t]) => t).join(', ')}</strong>. Revise as questões respondidas e releia as seções correspondentes do livro-texto.
+  </div>` : `<div class="recommend-box" style="background:#e8f4ee;border-color:#6fcf97;color:#1a3a2b;">
+    <strong>✓ Parabéns!</strong>
+    Todos os tópicos estão acima de 60%. Continue praticando para consolidar o aprendizado.
+  </div>`;
+
+  let reviewHTML = wrong.length === 0 ? '<p style="font-size:0.88rem;color:var(--sage);font-weight:600;">🎉 Você acertou todas as questões!</p>' :
+    wrong.map(id => {
+      const q = QUESTIONS.find(x => x.id === id);
+      const letters = ['A', 'B', 'C', 'D'];
+      let correctStr = '';
+      if (q.vf) {
+        correctStr = `Resposta correta: <strong>${q.vfAnswer ? 'Verdadeiro' : 'Falso'}</strong>`;
+      } else {
+        correctStr = `Resposta correta: <strong>${letters[q.correct]})</strong> ${q.options[q.correct]}`;
+      }
+      return `<div class="review-item">
+        <p class="review-q">${q.text.replace(/<[^>]+>/g, '')}</p>
+        <p class="review-correct">${correctStr}</p>
+        <p class="review-explain">${q.explain}</p>
+      </div>`;
+    }).join('');
+
+  const panel = document.getElementById('result-panel');
+  panel.innerHTML = `
+    <div class="result-hero">
+      <div>${emoji}</div>
+      <div class="result-score">${correct}/${total}</div>
+      <div class="result-pct">${pct}% de aproveitamento</div>
+      <div class="result-label">${msg}</div>
+    </div>
+    <div class="result-body">
+      <p class="breakdown-title">Desempenho por dificuldade</p>
+      ${diffHTML}
+      <p class="breakdown-title" style="margin-top:1.5rem;">Desempenho por tópico</p>
+      ${topicHTML}
+      ${recommendHTML}
+      <div class="review-section">
+        <p class="breakdown-title">Revisão das questões erradas (${wrong.length})</p>
+        ${reviewHTML}
+      </div>
+      <button class="btn-restart" onclick="restart()">↺ Reiniciar Quiz</button>
+    </div>`;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restart() {
+  answered = {};
+  renderQuestions();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── INIT ───
+renderQuestions();
+</script>
+</body>
+</html>
