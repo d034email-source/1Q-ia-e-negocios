@@ -1,548 +1,239 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz - Percepção e Motivação</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-        }
-
-        .question-container {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 5px solid #667eea;
-        }
-
-        .question-number {
-            color: #667eea;
-            font-weight: bold;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        .question {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .option {
-            padding: 15px 20px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-
-        .option:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
-            transform: translateX(5px);
-        }
-
-        .option input[type="radio"] {
-            margin-right: 12px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .option label {
-            cursor: pointer;
-            flex: 1;
-            font-size: 1em;
-            color: #333;
-        }
-
-        .option.correct {
-            background: #d4edda;
-            border-color: #28a745;
-        }
-
-        .option.incorrect {
-            background: #f8d7da;
-            border-color: #dc3545;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto;
-            transition: transform 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .submit-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .result {
-            text-align: center;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            margin-top: 30px;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-        }
-
-        .score {
-            font-size: 3em;
-            font-weight: bold;
-            color: #667eea;
-            margin: 20px 0;
-        }
-
-        .result-message {
-            font-size: 1.3em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .reset-btn {
-            background: #28a745;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .reset-btn:hover {
-            background: #218838;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .question {
-                font-size: 1em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📚 Quiz - Comportamento Organizacional</h1>
-        <p class="subtitle">Capítulos 3 e 4: Percepção e Motivação</p>
-
-        <form id="quizForm">
-            <!-- Questão 1 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 1</div>
-                <div class="question">Segundo a teoria da percepção, qual das afirmações está CORRETA?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q1" value="a" id="q1a">
-                        <label for="q1a">A percepção reflete a realidade objetiva e é igual para todas as pessoas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="b" id="q1b">
-                        <label for="q1b">Vemos o mundo de forma como fomos condicionados a vê-lo</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="c" id="q1c">
-                        <label for="q1c">A percepção não envolve nossas memórias ou experiências passadas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q1" value="d" id="q1d">
-                        <label for="q1d">Quanto menos maduro intelectualmente, melhor é a percepção</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 2 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 2</div>
-                <div class="question">Na Teoria da Atribuição, quando um funcionário chega atrasado e TODOS os colegas também chegam atrasados, estamos falando de qual fator?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q2" value="a" id="q2a">
-                        <label for="q2a">Diferenciação</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="b" id="q2b">
-                        <label for="q2b">Coerência</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="c" id="q2c">
-                        <label for="q2c">Consenso</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q2" value="d" id="q2d">
-                        <label for="q2d">Estereótipo</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 3 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 3</div>
-                <div class="question">Qual das opções NÃO é uma distorção de percepção mencionada no material?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q3" value="a" id="q3a">
-                        <label for="q3a">Efeito de contraste</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="b" id="q3b">
-                        <label for="q3b">Estereótipo</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="c" id="q3c">
-                        <label for="q3c">Efeito de halo</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q3" value="d" id="q3d">
-                        <label for="q3d">Efeito de ancoragem</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 4 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 4</div>
-                <div class="question">Na Hierarquia das Necessidades de Maslow, qual é a necessidade do TOPO da pirâmide?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q4" value="a" id="q4a">
-                        <label for="q4a">Necessidades de estima</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="b" id="q4b">
-                        <label for="q4b">Necessidades de autorrealização</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="c" id="q4c">
-                        <label for="q4c">Necessidades sociais</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q4" value="d" id="q4d">
-                        <label for="q4d">Necessidades de segurança</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 5 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 5</div>
-                <div class="question">Segundo a Teoria X e Y de McGregor, qual premissa pertence à Teoria Y?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q5" value="a" id="q5a">
-                        <label for="q5a">O homem, por natureza, não gosta de trabalhar</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="b" id="q5b">
-                        <label for="q5b">As pessoas precisam ser coagidas e controladas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="c" id="q5c">
-                        <label for="q5c">Os trabalhadores podem considerar o trabalho tão natural quanto descansar</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q5" value="d" id="q5d">
-                        <label for="q5d">Os trabalhadores evitam responsabilidades</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 6 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 6</div>
-                <div class="question">Na Teoria das Necessidades Adquiridas de McClelland, pessoas com elevada necessidade de REALIZAÇÃO tendem a:</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q6" value="a" id="q6a">
-                        <label for="q6a">Valorizar principalmente a amizade e contato permanente com outras pessoas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="b" id="q6b">
-                        <label for="q6b">Preferir situações com risco moderado e responsabilidade pessoal pelo sucesso</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="c" id="q6c">
-                        <label for="q6c">Desejar influenciar e controlar o ambiente social</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q6" value="d" id="q6d">
-                        <label for="q6d">Evitar feedback sobre o desempenho</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 7 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 7</div>
-                <div class="question">Segundo Herzberg, qual afirmação está CORRETA sobre fatores higiênicos e motivacionais?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q7" value="a" id="q7a">
-                        <label for="q7a">O oposto de satisfação é insatisfação</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="b" id="q7b">
-                        <label for="q7b">Fatores higiênicos previnem a insatisfação, mas sua presença não leva à satisfação</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="c" id="q7c">
-                        <label for="q7c">Salário é um fator motivacional</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q7" value="d" id="q7d">
-                        <label for="q7d">Condições de trabalho são fatores motivacionais</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 8 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 8</div>
-                <div class="question">Na Teoria da Expectativa de Vroom, quais são os TRÊS fatores principais?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q8" value="a" id="q8a">
-                        <label for="q8a">Expectativa, Valência e Instrumentalidade</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="b" id="q8b">
-                        <label for="q8b">Esforço, Desempenho e Satisfação</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="c" id="q8c">
-                        <label for="q8c">Necessidade, Motivação e Recompensa</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q8" value="d" id="q8d">
-                        <label for="q8d">Objetivo, Resultado e Feedback</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 9 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 9</div>
-                <div class="question">A Teoria da Equidade de Stacy Adams afirma que os trabalhadores:</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q9" value="a" id="q9a">
-                        <label for="q9a">Avaliam apenas seu próprio esforço sem comparar com outros</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="b" id="q9b">
-                        <label for="q9b">Comparam sua proporção entrada/resultado com a de outros funcionários relevantes</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="c" id="q9c">
-                        <label for="q9c">Não se importam com justiça nas recompensas</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q9" value="d" id="q9d">
-                        <label for="q9d">Focam apenas em recompensas financeiras</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Questão 10 -->
-            <div class="question-container">
-                <div class="question-number">QUESTÃO 10</div>
-                <div class="question">Qual das opções é um exemplo de fator MOTIVACIONAL segundo Herzberg?</div>
-                <div class="options">
-                    <div class="option">
-                        <input type="radio" name="q10" value="a" id="q10a">
-                        <label for="q10a">Salário</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="b" id="q10b">
-                        <label for="q10b">Condições de trabalho</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="c" id="q10c">
-                        <label for="q10c">Reconhecimento</label>
-                    </div>
-                    <div class="option">
-                        <input type="radio" name="q10" value="d" id="q10d">
-                        <label for="q10d">Relações com o supervisor</label>
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" class="submit-btn" onclick="submitQuiz()">Enviar Respostas</button>
-        </form>
-
-        <div class="result" id="result">
-            <h2>Resultado do Quiz</h2>
-            <div class="score" id="score"></div>
-            <div class="result-message" id="message"></div>
-            <button class="reset-btn" onclick="resetQuiz()">Refazer Quiz</button>
+<!-- Questão 11 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 11</div>
+    <div class="question">Segundo os fundamentos teóricos da percepção, qual afirmação está correta?</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q11" value="a" id="q11a">
+            <label for="q11a">A percepção não envolve memórias</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q11" value="b" id="q11b">
+            <label for="q11b">O sujeito e o mundo observado estão interligados</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q11" value="c" id="q11c">
+            <label for="q11c">A percepção é totalmente objetiva</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q11" value="d" id="q11d">
+            <label for="q11d">A maturidade intelectual não influencia a percepção</label>
         </div>
     </div>
+</div>
 
-    <script>
-        const answers = {
-            q1: 'b',
-            q2: 'c',
-            q3: 'd',
-            q4: 'b',
-            q5: 'c',
-            q6: 'b',
-            q7: 'b',
-            q8: 'a',
-            q9: 'b',
-            q10: 'c'
-        };
+<!-- Questão 12 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 12</div>
+    <div class="question">Qual fator influencia diretamente a percepção segundo o material?</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q12" value="a" id="q12a">
+            <label for="q12a">Valores e experiências passadas</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q12" value="b" id="q12b">
+            <label for="q12b">Somente a genética</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q12" value="c" id="q12c">
+            <label for="q12c">A idade apenas</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q12" value="d" id="q12d">
+            <label for="q12d">A sorte</label>
+        </div>
+    </div>
+</div>
 
-        function submitQuiz() {
-            let score = 0;
-            let answered = 0;
-            const total = Object.keys(answers).length;
+<!-- Questão 13 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 13</div>
+    <div class="question">O que é heteropercepção?</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q13" value="a" id="q13a">
+            <label for="q13a">A maneira como percebemos os outros</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q13" value="b" id="q13b">
+            <label for="q13b">A percepção apenas de objetos</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q13" value="c" id="q13c">
+            <label for="q13c">A ausência de julgamento</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q13" value="d" id="q13d">
+            <label for="q13d">Uma técnica de liderança</label>
+        </div>
+    </div>
+</div>
 
-            // Verificar se todas as questões foram respondidas
-            for (let question in answers) {
-                const selected = document.querySelector(`input[name="${question}"]:checked`);
-                if (selected) {
-                    answered++;
-                }
-            }
+<!-- Questão 14 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 14</div>
+    <div class="question">Quando um funcionário chega sempre atrasado, segundo a Teoria da Atribuição, isso indica:</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q14" value="a" id="q14a">
+            <label for="q14a">Consenso</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q14" value="b" id="q14b">
+            <label for="q14b">Coerência</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q14" value="c" id="q14c">
+            <label for="q14c">Estereótipo</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q14" value="d" id="q14d">
+            <label for="q14d">Halo</label>
+        </div>
+    </div>
+</div>
 
-            if (answered < total) {
-                alert('Por favor, responda todas as questões antes de enviar!');
-                return;
-            }
+<!-- Questão 15 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 15</div>
+    <div class="question">O efeito de halo ocorre quando:</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q15" value="a" id="q15a">
+            <label for="q15a">Avaliamos alguém comparando com outra pessoa</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q15" value="b" id="q15b">
+            <label for="q15b">Criamos um julgamento baseado em uma única característica</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q15" value="c" id="q15c">
+            <label for="q15c">Ignoramos experiências passadas</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q15" value="d" id="q15d">
+            <label for="q15d">Observamos apenas dados objetivos</label>
+        </div>
+    </div>
+</div>
 
-            // Calcular pontuação e marcar respostas
-            for (let question in answers) {
-                const selected = document.querySelector(`input[name="${question}"]:checked`);
-                const correctAnswer = answers[question];
-                
-                // Remover classes anteriores
-                document.querySelectorAll(`input[name="${question}"]`).forEach(input => {
-                    input.parentElement.classList.remove('correct', 'incorrect');
-                });
+<!-- Questão 16 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 16</div>
+    <div class="question">Qual medida ajuda a minimizar distorções de percepção?</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q16" value="a" id="q16a">
+            <label for="q16a">Evitar opiniões diferentes</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q16" value="b" id="q16b">
+            <label for="q16b">Coletar percepções de outras pessoas</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q16" value="c" id="q16c">
+            <label for="q16c">Julgar rapidamente</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q16" value="d" id="q16d">
+            <label for="q16d">Ignorar o contexto</label>
+        </div>
+    </div>
+</div>
 
-                if (selected) {
-                    if (selected.value === correctAnswer) {
-                        score++;
-                        selected.parentElement.classList.add('correct');
-                    } else {
-                        selected.parentElement.classList.add('incorrect');
-                        // Mostrar resposta correta
-                        document.querySelector(`input[name="${question}"][value="${correctAnswer}"]`).parentElement.classList.add('correct');
-                    }
-                }
-            }
+<!-- Questão 17 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 17</div>
+    <div class="question">Segundo Maslow, qual necessidade está relacionada ao reconhecimento e prestígio?</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q17" value="a" id="q17a">
+            <label for="q17a">Necessidade fisiológica</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q17" value="b" id="q17b">
+            <label for="q17b">Necessidade social</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q17" value="c" id="q17c">
+            <label for="q17c">Necessidade de estima</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q17" value="d" id="q17d">
+            <label for="q17d">Autorrealização</label>
+        </div>
+    </div>
+</div>
 
-            // Mostrar resultado
-            const percentage = (score / total) * 100;
-            document.getElementById('score').textContent = `${score} / ${total}`;
-            
-            let message = '';
-            if (percentage === 100) {
-                message = '🎉 Perfeito! Você domina o conteúdo!';
-            } else if (percentage >= 70) {
-                message = '👏 Muito bem! Você tem um bom conhecimento do conteúdo!';
-            } else if (percentage >= 50) {
-                message = '📚 Bom trabalho! Continue estudando para melhorar!';
-            } else {
-                message = '💪 Continue estudando! Revise o material e tente novamente!';
-            }
-            
-            document.getElementById('message').textContent = message;
-            document.getElementById('result').classList.add('show');
-            
-            // Desabilitar botão de envio
-            document.querySelector('.submit-btn').disabled = true;
-            
-            // Scroll para o resultado
-            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-        }
+<!-- Questão 18 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 18</div>
+    <div class="question">Na Teoria X, os trabalhadores:</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q18" value="a" id="q18a">
+            <label for="q18a">Buscam responsabilidades naturalmente</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q18" value="b" id="q18b">
+            <label for="q18b">São inovadores por natureza</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q18" value="c" id="q18c">
+            <label for="q18c">Precisam ser controlados e coagidos</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q18" value="d" id="q18d">
+            <label for="q18d">Consideram o trabalho natural</label>
+        </div>
+    </div>
+</div>
 
-        function resetQuiz() {
-            // Limpar seleções
-            document.querySelectorAll('input[type="radio"]').forEach(input => {
-                input.checked = false;
-                input.parentElement.classList.remove('correct', 'incorrect');
-            });
+<!-- Questão 19 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 19</div>
+    <div class="question">Segundo McClelland, pessoas com necessidade de associação valorizam:</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q19" value="a" id="q19a">
+            <label for="q19a">Competição extrema</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q19" value="b" id="q19b">
+            <label for="q19b">Amizade e contato com outras pessoas</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q19" value="c" id="q19c">
+            <label for="q19c">Controle social</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q19" value="d" id="q19d">
+            <label for="q19d">Isolamento</label>
+        </div>
+    </div>
+</div>
 
-            // Esconder resultado
-            document.getElementById('result').classList.remove('show');
-            
-            // Habilitar botão de envio
-            document.querySelector('.submit-btn').disabled = false;
-            
-            // Scroll para o topo
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
-</body>
-</html>
+<!-- Questão 20 -->
+<div class="question-container">
+    <div class="question-number">QUESTÃO 20</div>
+    <div class="question">Na Teoria da Equidade, quando as proporções entre esforço e recompensa são consideradas iguais, existe:</div>
+    <div class="options">
+        <div class="option">
+            <input type="radio" name="q20" value="a" id="q20a">
+            <label for="q20a">Motivação extrínseca</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q20" value="b" id="q20b">
+            <label for="q20b">Estado de equidade</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q20" value="c" id="q20c">
+            <label for="q20c">Insatisfação automática</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="q20" value="d" id="q20d">
+            <label for="q20d">Efeito de contraste</label>
+        </div>
+    </div>
+</div>
