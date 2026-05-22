@@ -1,607 +1,612 @@
-import React, { useState } from 'react';
-import { CheckCircle, XCircle, Award, RotateCcw } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz ARC – Atendimento e Relacionamento com Clientes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-const QuizARC = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState([]);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-
-  const questions = [
-    // INSTRUMENTOS PARA OUVIR O CLIENTE (Questões 1-8)
-    {
-      question: "Segundo Sheth, quais são os três componentes de atitudes que influenciam o comportamento do cliente?",
-      options: [
-        "Racional, emocional e prático",
-        "Cognitivo, afetivo e conativo",
-        "Declarado, real e secreto",
-        "Técnico, comercial e operacional"
-      ],
-      correct: 1,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "A equipe de antropólogos da Whirlpool (Brastemp) visitou residências para observar o uso de lavadoras e secadoras. Qual foi a principal descoberta que levou ao desenvolvimento de botões coloridos e ilustrados?",
-      options: [
-        "As donas de casa preferiam máquinas mais coloridas",
-        "Muitas donas de casa eram ocupadas e outras pessoas (homens e crianças) também operavam as máquinas",
-        "Os botões anteriores quebravam com facilidade",
-        "As máquinas precisavam ser mais tecnológicas"
-      ],
-      correct: 1,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "Segundo Juran (1992), qual é a diferença fundamental entre o que os clientes declaram e o que realmente necessitam?",
-      options: [
-        "Clientes declaram necessidades em termos de bens, mas suas necessidades reais são pelos serviços que aqueles bens podem prestar",
-        "Clientes sempre sabem exatamente o que precisam",
-        "Não há diferença significativa entre necessidade declarada e real",
-        "Clientes nunca conseguem expressar suas necessidades verdadeiras"
-      ],
-      correct: 0,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "Quantos tipos de necessidades do cliente são apresentados na classificação que inclui 'necessidade declarada', 'necessidade real', etc.?",
-      options: [
-        "3 tipos",
-        "4 tipos",
-        "5 tipos",
-        "6 tipos"
-      ],
-      correct: 2,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "Segundo Michael Porter, como é determinada a vantagem competitiva?",
-      options: [
-        "Pelo menor preço do mercado",
-        "Pelo valor que a empresa consegue criar para seus clientes e que ultrapassa os custos de produção",
-        "Pela maior quantidade de produtos vendidos",
-        "Pela tecnologia mais avançada utilizada"
-      ],
-      correct: 1,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "Qual é a fórmula apresentada para o 'Valor para o cliente'?",
-      options: [
-        "Preço - Custo de produção",
-        "Qualidade × Quantidade",
-        "O que o cliente obteve / O que custou para o cliente",
-        "Benefícios + Características - Preço"
-      ],
-      correct: 2,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "O que representa um 'valor superior' para o cliente, segundo o material?",
-      options: [
-        "Sempre o produto mais barato disponível",
-        "Produto com características idênticas à concorrência por preço mais baixo OU produto com benefícios superiores que compensam um preço mais elevado",
-        "Apenas produtos premium com preços elevados",
-        "Produtos que seguem tendências de mercado"
-      ],
-      correct: 1,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-    {
-      question: "Jack Welch, CEO da General Eletrics, ao ser questionado por um funcionário sobre como garantir o emprego, respondeu:",
-      options: [
-        "Trabalhe mais horas",
-        "Seja mais produtivo",
-        "Quem pode garantir-lhe o emprego são os nossos clientes",
-        "Depende do seu desempenho individual"
-      ],
-      correct: 2,
-      topic: "Instrumentos para ouvir o cliente"
-    },
-
-    // RISCOS AO OUVIR CLIENTES E SELEÇÃO (Questões 9-16)
-    {
-      question: "Segundo Hamel e Prahalad (1995), em vez de perguntar ao cliente o produto/serviço que ele deseja, o que deve ser feito?",
-      options: [
-        "Oferecer o produto mais barato",
-        "Investigar quais suas necessidades não atendidas (no todo ou em parte)",
-        "Copiar o que a concorrência está fazendo",
-        "Desenvolver produtos baseados apenas em tecnologia"
-      ],
-      correct: 1,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "Quantos tipos de empresas são descritos por Hamel e Prahalad em relação ao tratamento com clientes?",
-      options: [
-        "2 tipos",
-        "3 tipos",
-        "4 tipos",
-        "5 tipos"
-      ],
-      correct: 1,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "Qual tipo de empresa Hamel e Prahalad consideram como 'empresas que criam o futuro'?",
-      options: [
-        "As que tentam levar os clientes para onde eles não querem ir",
-        "As que escutam os clientes e respondem às suas necessidades articuladas",
-        "As que levam os clientes para onde eles querem ir, mas ainda não sabem disso",
-        "As que copiam a concorrência"
-      ],
-      correct: 2,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "O que é valor subjetivo segundo o material apresentado?",
-      options: [
-        "O custo de produção do produto",
-        "O valor de um bem ou serviço determinado pela importância que um indivíduo atribui a ele para satisfazer suas necessidades e desejos",
-        "O preço de mercado estabelecido pela concorrência",
-        "O lucro da empresa"
-      ],
-      correct: 1,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "Charles Revson, da Revlon, exemplificou o valor subjetivo dizendo: 'Quando ele sai da fábrica é batom, mas quando passa por cima do balcão da loja de departamentos, é ______.'",
-      options: [
-        "Beleza",
-        "Luxo",
-        "Esperança",
-        "Glamour"
-      ],
-      correct: 2,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "Quem criou o conceito de 'Miopia de Marketing' em 1960?",
-      options: [
-        "Philip Kotler",
-        "Michael Porter",
-        "Theodore Levitt",
-        "Peter Drucker"
-      ],
-      correct: 2,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "Segundo o conceito de Miopia de Marketing, qual é o erro fatal que empresas cometem?",
-      options: [
-        "Cobrar preços muito altos",
-        "Focar demais no produto (preço e características) e esquecer as necessidades do cliente (valor)",
-        "Investir pouco em marketing",
-        "Contratar funcionários inadequados"
-      ],
-      correct: 1,
-      topic: "Riscos ao ouvir clientes"
-    },
-    {
-      question: "No exemplo clássico de Miopia de Marketing, por que as ferrovias perderam mercado para carros e aviões?",
-      options: [
-        "Porque os trens ficaram muito caros",
-        "Porque achavam que estavam no 'negócio de trens' quando na verdade estavam no 'negócio de transportes'",
-        "Porque não investiram em tecnologia",
-        "Porque os funcionários não eram qualificados"
-      ],
-      correct: 1,
-      topic: "Riscos ao ouvir clientes"
-    },
-
-    // SELEÇÃO DE CLIENTES E NPS (Questões 17-22)
-    {
-      question: "Segundo o material, é verdade que todos os clientes interessam para um negócio?",
-      options: [
-        "Sim, todos os clientes são importantes",
-        "Não, alguns clientes podem ser tão danosos que mantê-los representa mais problemas do que deixá-los partir",
-        "Sim, mas apenas em grandes empresas",
-        "Depende apenas do setor de atuação"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-    {
-      question: "Quais são as três perguntas fundamentais que uma empresa deve saber responder para avaliar se um cliente é estratégico?",
-      options: [
-        "Quem é? Onde mora? Quanto compra?",
-        "O que está oferecendo? Quão diferente é isso da concorrência? Quanto ganha?",
-        "É fiel? É rentável? É influente?",
-        "Compra muito? Paga em dia? Reclama pouco?"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-    {
-      question: "Para selecionar adequadamente clientes, o que é necessário segundo o material?",
-      options: [
-        "Apenas intuição do gestor",
-        "Estar respaldado por estatísticas históricas que mostram a evolução do cliente",
-        "Seguir o que a concorrência faz",
-        "Aceitar todos os clientes igualmente"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-    {
-      question: "A seleção de clientes é uma medida estratégica porque:",
-      options: [
-        "Reduz custos operacionais imediatamente",
-        "Considera a viabilidade de curto, médio e longo prazos de cada cliente e o tipo de clientes que os concorrentes possuem",
-        "Permite demitir funcionários",
-        "Aumenta o preço dos produtos"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-    {
-      question: "O que significa a sigla NPS?",
-      options: [
-        "New Product System",
-        "Net Promoter Score",
-        "National Performance Standard",
-        "Network Processing Service"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-    {
-      question: "Qual é a pergunta central do NPS (Net Promoter Score)?",
-      options: [
-        "Você está satisfeito com nosso produto?",
-        "O quanto você nos recomendaria a empresa/produto para um amigo ou parente? (escala 0-10)",
-        "Você voltaria a comprar conosco?",
-        "Qual nota você dá para nosso atendimento?"
-      ],
-      correct: 1,
-      topic: "Seleção de clientes"
-    },
-
-    // CRM (Questões 23-29)
-    {
-      question: "O que significa a sigla CRM?",
-      options: [
-        "Customer Relations Manager",
-        "Corporate Risk Management",
-        "Customer Relationship Management",
-        "Client Revenue Monitoring"
-      ],
-      correct: 2,
-      topic: "CRM"
-    },
-    {
-      question: "Segundo Peppers e Rogers (2001), o que envolve CRM do ponto de vista tecnológico?",
-      options: [
-        "Apenas capturar dados dos clientes",
-        "Capturar dados, consolidar em banco central, analisar, distribuir resultados e usar ao interagir com cliente",
-        "Somente armazenar informações de vendas",
-        "Criar campanhas de marketing"
-      ],
-      correct: 1,
-      topic: "CRM"
-    },
-    {
-      question: "Qual é a principal diferença do CRM em relação aos sistemas tradicionais?",
-      options: [
-        "CRM é mais caro",
-        "CRM tem total preocupação com o cliente, que passa a ser o centro do modelo de dados",
-        "CRM é mais rápido",
-        "CRM usa tecnologia mais avançada"
-      ],
-      correct: 1,
-      topic: "CRM"
-    },
-    {
-      question: "Qual é o principal objetivo do CRM?",
-      options: [
-        "Reduzir custos operacionais",
-        "Ajudar a empresa a organizar o processo de gestão de vendas e criar a melhor experiência do cliente",
-        "Automatizar processos internos",
-        "Substituir funcionários por sistemas"
-      ],
-      correct: 1,
-      topic: "CRM"
-    },
-    {
-      question: "O CRM permite conhecer leads e clientes em um nível mais aprofundado. O que ele ajuda a entender?",
-      options: [
-        "Apenas dados demográficos",
-        "Detalhes sobre comportamentos, tendências e necessidades",
-        "Somente histórico de compras",
-        "Apenas informações de contato"
-      ],
-      correct: 1,
-      topic: "CRM"
-    },
-    {
-      question: "Quais tipos de informações um CRM software capta ao entrar em contato com um cliente?",
-      options: [
-        "Apenas nome e telefone",
-        "Nome, telefone, endereço, e-mail, ações no site, produtos/serviços comprados, etc.",
-        "Somente histórico de compras",
-        "Apenas dados financeiros"
-      ],
-      correct: 1,
-      topic: "CRM"
-    },
-    {
-      question: "Qual das seguintes NÃO é uma ferramenta/componente típico de CRM mencionado no material?",
-      options: [
-        "Call Center",
-        "Help Desk",
-        "Automação de vendas",
-        "Gestão de estoque"
-      ],
-      correct: 3,
-      topic: "CRM"
-    },
-
-    // REQUISITOS DOS ATENDENTES (Questões 30-33)
-    {
-      question: "Quantas características/habilidades principais devem ter os atendentes que interagem com clientes, segundo o material?",
-      options: [
-        "3 características",
-        "4 características",
-        "5 características",
-        "6 características"
-      ],
-      correct: 2,
-      topic: "Perfil do atendente"
-    },
-    {
-      question: "O que significa 'autossuficiência técnica' no perfil do atendente?",
-      options: [
-        "Saber consertar equipamentos",
-        "Conhecer a empresa, o que ela faz e o que fazem suas várias áreas/setores para entender e encaminhar solicitações",
-        "Ter diploma técnico",
-        "Saber programar computadores"
-      ],
-      correct: 1,
-      topic: "Perfil do atendente"
-    },
-    {
-      question: "O que é empatia no contexto do atendimento ao cliente?",
-      options: [
-        "Ser simpático com todos",
-        "Capacidade de colocar-se no lugar do cliente e sentir como ele",
-        "Concordar com tudo que o cliente diz",
-        "Oferecer descontos"
-      ],
-      correct: 1,
-      topic: "Perfil do atendente"
-    },
-    {
-      question: "Para que se possa dar autonomia a um atendente resolver problemas, o que é necessário?",
-      options: [
-        "Apenas boa vontade",
-        "Autossuficiência técnica e acesso às informações necessárias",
-        "Muitos anos de experiência",
-        "Apenas autorização da diretoria"
-      ],
-      correct: 1,
-      topic: "Perfil do atendente"
-    },
-
-    // SATISFAÇÃO DOS CLIENTES (Questões 34-35)
-    {
-      question: "Segundo Kotler (2000), qual é a fórmula da satisfação do cliente?",
-      options: [
-        "Satisfação = Qualidade - Preço",
-        "Satisfação = Desempenho versus Expectativas",
-        "Satisfação = Produto + Serviço",
-        "Satisfação = Benefícios - Custos"
-      ],
-      correct: 1,
-      topic: "Satisfação dos clientes"
-    },
-    {
-      question: "Quais são os métodos sugeridos por Philip Kotler para acompanhar e medir a satisfação dos clientes?",
-      options: [
-        "Apenas pesquisas online",
-        "Sistemas de Reclamações/Sugestões, Pesquisas de Satisfação, Compras Simuladas, Análise de Clientes Perdidos",
-        "Somente análise de vendas",
-        "Apenas feedback em redes sociais"
-      ],
-      correct: 1,
-      topic: "Satisfação dos clientes"
+    :root {
+      --blue:    #2563eb;
+      --blue-dk: #1d4ed8;
+      --blue-lt: #eff6ff;
+      --green:   #16a34a;
+      --green-lt:#f0fdf4;
+      --red:     #dc2626;
+      --red-lt:  #fef2f2;
+      --gray-50: #f9fafb;
+      --gray-100:#f3f4f6;
+      --gray-200:#e5e7eb;
+      --gray-300:#d1d5db;
+      --gray-500:#6b7280;
+      --gray-700:#374151;
+      --gray-800:#1f2937;
+      --radius:  12px;
     }
-  ];
 
-  const handleAnswerClick = (selectedIndex) => {
-    setSelectedAnswer(selectedIndex);
-    setShowResult(true);
-    
-    const isCorrect = selectedIndex === questions[currentQuestion].correct;
-    if (isCorrect) {
-      setScore(score + 1);
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
     }
-    
-    setAnsweredQuestions([...answeredQuestions, {
-      question: currentQuestion,
-      selected: selectedIndex,
-      correct: questions[currentQuestion].correct,
-      isCorrect: isCorrect
-    }]);
-  };
 
-  const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setShowResult(false);
-    } else {
-      setQuizCompleted(true);
+    #app { width: 100%; max-width: 780px; }
+
+    /* ── HEADER ─────────────────────────── */
+    .header {
+      margin-bottom: 1.5rem;
     }
-  };
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .header h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1.25;
+    }
+    .counter {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .counter small { font-size: .75rem; color: var(--gray-500); display: block; }
+    .counter strong { font-size: 1.6rem; font-weight: 700; color: var(--blue); font-family:'Sora',sans-serif; }
 
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setScore(0);
-    setAnsweredQuestions([]);
-    setQuizCompleted(false);
-  };
+    /* ── PROGRESS ───────────────────────── */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--gray-200);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: .5rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+      color: var(--gray-500);
+    }
+    .topic-badge {
+      font-weight: 600;
+      color: var(--blue);
+    }
 
-  const getScorePercentage = () => {
-    return ((score / questions.length) * 100).toFixed(1);
-  };
+    /* ── CARD ───────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,.07);
+      margin-bottom: 1.25rem;
+    }
+    .question-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
 
-  const getPerformanceMessage = () => {
-    const percentage = parseFloat(getScorePercentage());
-    if (percentage >= 90) return { message: "Excelente! Você domina o conteúdo!", color: "text-green-700" };
-    if (percentage >= 70) return { message: "Muito bom! Bom conhecimento da matéria.", color: "text-blue-700" };
-    if (percentage >= 50) return { message: "Razoável. Revise alguns conceitos.", color: "text-yellow-700" };
-    return { message: "É preciso estudar mais. Revise todo o conteúdo.", color: "text-red-700" };
-  };
+    /* ── OPTIONS ────────────────────────── */
+    .options { display: flex; flex-direction: column; gap: .75rem; }
 
-  if (quizCompleted) {
-    const performance = getPerformanceMessage();
-    return (
-      <div className="min-h-screen bg-white p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <Award className="w-24 h-24 mx-auto mb-4 text-blue-600" />
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Quiz Concluído!</h1>
-            <p className="text-xl text-gray-600">Confira seu desempenho</p>
-          </div>
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: .9rem 1.1rem;
+      border-radius: 10px;
+      border: 2px solid var(--gray-200);
+      background: #fff;
+      cursor: pointer;
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--gray-800);
+      transition: border-color .18s, background .18s, transform .12s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--blue);
+      background: var(--blue-lt);
+      transform: translateX(3px);
+    }
+    .option-btn:disabled { cursor: default; }
 
-          <div className="bg-gray-50 rounded-lg p-8 mb-8 border-2 border-gray-200">
-            <div className="text-center mb-6">
-              <p className="text-6xl font-bold text-blue-600 mb-2">{score}/{questions.length}</p>
-              <p className="text-2xl text-gray-700">Pontuação: {getScorePercentage()}%</p>
-              <p className={`text-xl font-semibold mt-4 ${performance.color}`}>{performance.message}</p>
-            </div>
+    .option-btn.correct {
+      background: var(--green-lt);
+      border-color: var(--green);
+      color: #14532d;
+    }
+    .option-btn.wrong {
+      background: var(--red-lt);
+      border-color: var(--red);
+      color: #7f1d1d;
+    }
+    .option-btn.dimmed {
+      background: var(--gray-100);
+      border-color: var(--gray-200);
+      color: var(--gray-500);
+    }
 
-            <div className="mt-8">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Distribuição por Tópico:</h3>
-              {Object.entries(
-                questions.reduce((acc, q, idx) => {
-                  const topic = q.topic;
-                  if (!acc[topic]) acc[topic] = { total: 0, correct: 0 };
-                  acc[topic].total++;
-                  const answered = answeredQuestions.find(a => a.question === idx);
-                  if (answered && answered.isCorrect) acc[topic].correct++;
-                  return acc;
-                }, {})
-              ).map(([topic, stats]) => (
-                <div key={topic} className="mb-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium text-gray-700">{topic}</span>
-                    <span className="text-sm text-gray-600">
-                      {stats.correct}/{stats.total} ({((stats.correct/stats.total)*100).toFixed(0)}%)
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(stats.correct/stats.total)*100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+    .icon { width: 24px; height: 24px; flex-shrink: 0; }
 
-          <div className="text-center">
-            <button
-              onClick={resetQuiz}
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
-            >
-              <RotateCcw size={24} />
-              Refazer Quiz
-            </button>
-          </div>
+    /* ── NEXT BTN ───────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: .85rem 2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--blue-dk); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .next-wrap { display: flex; justify-content: center; }
+
+    /* ── RESULT SCREEN ──────────────────── */
+    .result-screen { background: #fff; border-radius: var(--radius); padding: 2.5rem 2rem; box-shadow: 0 2px 16px rgba(0,0,0,.07); }
+    .result-header { text-align: center; margin-bottom: 2rem; }
+    .award-icon { display: flex; justify-content: center; margin-bottom: 1rem; color: var(--blue); }
+    .result-header h1 { font-family:'Sora',sans-serif; font-size: 2rem; font-weight: 800; color: var(--gray-800); margin-bottom: .35rem; }
+    .result-header p  { color: var(--gray-500); font-size: 1rem; }
+
+    .score-box { text-align: center; margin-bottom: 1.5rem; }
+    .score-big { font-family:'Sora',sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--blue); line-height:1; }
+    .score-pct { font-size: 1.3rem; color: var(--gray-700); margin-top:.25rem; }
+    .perf-msg  { font-family:'Sora',sans-serif; font-size: 1.1rem; font-weight: 700; margin-top: 1rem; }
+    .perf-green { color: var(--green); }
+    .perf-blue  { color: var(--blue); }
+    .perf-yellow{ color: #b45309; }
+    .perf-red   { color: var(--red); }
+
+    .topics-title { font-family:'Sora',sans-serif; font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: 1rem; }
+    .topic-row { margin-bottom: .85rem; }
+    .topic-row-meta { display: flex; justify-content: space-between; font-size: .85rem; margin-bottom: .3rem; }
+    .topic-name  { font-weight: 600; color: var(--gray-700); }
+    .topic-stats { color: var(--gray-500); }
+    .bar-track { height: 8px; background: var(--gray-200); border-radius: 99px; overflow:hidden; }
+    .bar-fill  { height: 100%; background: var(--blue); border-radius: 99px; transition: width .6s ease; }
+
+    .result-footer { display: flex; justify-content: center; margin-top: 2rem; }
+
+    /* hidden by default */
+    .hidden { display: none !important; }
+
+    @media (max-width: 480px) {
+      .header h1 { font-size: 1.1rem; }
+      .card { padding: 1.25rem; }
+      .question-text { font-size: 1rem; }
+      .option-btn { font-size: .88rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── QUIZ VIEW ───────────────────── -->
+  <div id="quiz-view">
+    <div class="header">
+      <div class="header-top">
+        <h1>Quiz ARC – Atendimento e Relacionamento com Clientes</h1>
+        <div class="counter">
+          <small>Questão</small>
+          <strong id="q-counter"></strong>
         </div>
       </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-white p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-bold text-gray-800">Quiz ARC - Atendimento e Relacionamento com Clientes</h1>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Questão</p>
-              <p className="text-2xl font-bold text-blue-600">{currentQuestion + 1}/{questions.length}</p>
-            </div>
-          </div>
-          
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-            <div 
-              className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-              style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-            ></div>
-          </div>
-          
-          <div className="flex justify-between items-center text-sm text-gray-600">
-            <span className="font-medium text-blue-700">{questions[currentQuestion].topic}</span>
-            <span>Pontuação: {score}/{currentQuestion}</span>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-8 border-2 border-gray-200 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 leading-relaxed">
-            {questions[currentQuestion].question}
-          </h2>
-
-          <div className="space-y-4">
-            {questions[currentQuestion].options.map((option, index) => {
-              const isCorrect = index === questions[currentQuestion].correct;
-              const isSelected = index === selectedAnswer;
-              
-              let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ";
-              
-              if (showResult) {
-                if (isCorrect) {
-                  buttonClass += "bg-green-50 border-green-500 text-green-900";
-                } else if (isSelected && !isCorrect) {
-                  buttonClass += "bg-red-50 border-red-500 text-red-900";
-                } else {
-                  buttonClass += "bg-gray-100 border-gray-300 text-gray-500";
-                }
-              } else {
-                buttonClass += "bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-800";
-              }
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => !showResult && handleAnswerClick(index)}
-                  disabled={showResult}
-                  className={buttonClass}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-lg">{option}</span>
-                    {showResult && (
-                      <span>
-                        {isCorrect && <CheckCircle className="text-green-600" size={28} />}
-                        {isSelected && !isCorrect && <XCircle className="text-red-600" size={28} />}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {showResult && (
-          <div className="text-center">
-            <button
-              onClick={handleNextQuestion}
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
-            >
-              {currentQuestion < questions.length - 1 ? 'Próxima Questão' : 'Ver Resultado Final'}
-            </button>
-          </div>
-        )}
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-meta">
+        <span class="topic-badge" id="topic-label"></span>
+        <span id="score-label"></span>
       </div>
     </div>
-  );
-};
 
-export default QuizARC;
+    <div class="card">
+      <p class="question-text" id="question-text"></p>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="next-wrap hidden" id="next-wrap">
+      <button class="btn-primary" id="next-btn">
+        <span id="next-label">Próxima Questão</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RESULT VIEW ─────────────────── -->
+  <div id="result-view" class="hidden">
+    <div class="result-screen">
+      <div class="result-header">
+        <div class="award-icon">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="6"/>
+            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+          </svg>
+        </div>
+        <h1>Quiz Concluído!</h1>
+        <p>Confira seu desempenho</p>
+      </div>
+
+      <div class="score-box">
+        <div class="score-big" id="score-big"></div>
+        <div class="score-pct" id="score-pct"></div>
+        <div class="perf-msg" id="perf-msg"></div>
+      </div>
+
+      <p class="topics-title">Distribuição por Tópico:</p>
+      <div id="topics-breakdown"></div>
+
+      <div class="result-footer">
+        <button class="btn-primary" id="reset-btn">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Refazer Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // INSTRUMENTOS PARA OUVIR O CLIENTE (1-8)
+  {
+    question: "Segundo Sheth, quais são os três componentes de atitudes que influenciam o comportamento do cliente?",
+    options: ["Racional, emocional e prático","Cognitivo, afetivo e conativo","Declarado, real e secreto","Técnico, comercial e operacional"],
+    correct: 1, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "A equipe de antropólogos da Whirlpool (Brastemp) visitou residências para observar o uso de lavadoras e secadoras. Qual foi a principal descoberta que levou ao desenvolvimento de botões coloridos e ilustrados?",
+    options: ["As donas de casa preferiam máquinas mais coloridas","Muitas donas de casa eram ocupadas e outras pessoas (homens e crianças) também operavam as máquinas","Os botões anteriores quebravam com facilidade","As máquinas precisavam ser mais tecnológicas"],
+    correct: 1, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "Segundo Juran (1992), qual é a diferença fundamental entre o que os clientes declaram e o que realmente necessitam?",
+    options: ["Clientes declaram necessidades em termos de bens, mas suas necessidades reais são pelos serviços que aqueles bens podem prestar","Clientes sempre sabem exatamente o que precisam","Não há diferença significativa entre necessidade declarada e real","Clientes nunca conseguem expressar suas necessidades verdadeiras"],
+    correct: 0, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "Quantos tipos de necessidades do cliente são apresentados na classificação que inclui 'necessidade declarada', 'necessidade real', etc.?",
+    options: ["3 tipos","4 tipos","5 tipos","6 tipos"],
+    correct: 2, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "Segundo Michael Porter, como é determinada a vantagem competitiva?",
+    options: ["Pelo menor preço do mercado","Pelo valor que a empresa consegue criar para seus clientes e que ultrapassa os custos de produção","Pela maior quantidade de produtos vendidos","Pela tecnologia mais avançada utilizada"],
+    correct: 1, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "Qual é a fórmula apresentada para o 'Valor para o cliente'?",
+    options: ["Preço - Custo de produção","Qualidade × Quantidade","O que o cliente obteve / O que custou para o cliente","Benefícios + Características - Preço"],
+    correct: 2, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "O que representa um 'valor superior' para o cliente, segundo o material?",
+    options: ["Sempre o produto mais barato disponível","Produto com características idênticas à concorrência por preço mais baixo OU produto com benefícios superiores que compensam um preço mais elevado","Apenas produtos premium com preços elevados","Produtos que seguem tendências de mercado"],
+    correct: 1, topic: "Instrumentos para ouvir o cliente"
+  },
+  {
+    question: "Jack Welch, CEO da General Eletrics, ao ser questionado por um funcionário sobre como garantir o emprego, respondeu:",
+    options: ["Trabalhe mais horas","Seja mais produtivo","Quem pode garantir-lhe o emprego são os nossos clientes","Depende do seu desempenho individual"],
+    correct: 2, topic: "Instrumentos para ouvir o cliente"
+  },
+  // RISCOS AO OUVIR CLIENTES (9-16)
+  {
+    question: "Segundo Hamel e Prahalad (1995), em vez de perguntar ao cliente o produto/serviço que ele deseja, o que deve ser feito?",
+    options: ["Oferecer o produto mais barato","Investigar quais suas necessidades não atendidas (no todo ou em parte)","Copiar o que a concorrência está fazendo","Desenvolver produtos baseados apenas em tecnologia"],
+    correct: 1, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "Quantos tipos de empresas são descritos por Hamel e Prahalad em relação ao tratamento com clientes?",
+    options: ["2 tipos","3 tipos","4 tipos","5 tipos"],
+    correct: 1, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "Qual tipo de empresa Hamel e Prahalad consideram como 'empresas que criam o futuro'?",
+    options: ["As que tentam levar os clientes para onde eles não querem ir","As que escutam os clientes e respondem às suas necessidades articuladas","As que levam os clientes para onde eles querem ir, mas ainda não sabem disso","As que copiam a concorrência"],
+    correct: 2, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "O que é valor subjetivo segundo o material apresentado?",
+    options: ["O custo de produção do produto","O valor de um bem ou serviço determinado pela importância que um indivíduo atribui a ele para satisfazer suas necessidades e desejos","O preço de mercado estabelecido pela concorrência","O lucro da empresa"],
+    correct: 1, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "Charles Revson, da Revlon, exemplificou o valor subjetivo dizendo: 'Quando ele sai da fábrica é batom, mas quando passa por cima do balcão da loja de departamentos, é ______.'",
+    options: ["Beleza","Luxo","Esperança","Glamour"],
+    correct: 2, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "Quem criou o conceito de 'Miopia de Marketing' em 1960?",
+    options: ["Philip Kotler","Michael Porter","Theodore Levitt","Peter Drucker"],
+    correct: 2, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "Segundo o conceito de Miopia de Marketing, qual é o erro fatal que empresas cometem?",
+    options: ["Cobrar preços muito altos","Focar demais no produto (preço e características) e esquecer as necessidades do cliente (valor)","Investir pouco em marketing","Contratar funcionários inadequados"],
+    correct: 1, topic: "Riscos ao ouvir clientes"
+  },
+  {
+    question: "No exemplo clássico de Miopia de Marketing, por que as ferrovias perderam mercado para carros e aviões?",
+    options: ["Porque os trens ficaram muito caros","Porque achavam que estavam no 'negócio de trens' quando na verdade estavam no 'negócio de transportes'","Porque não investiram em tecnologia","Porque os funcionários não eram qualificados"],
+    correct: 1, topic: "Riscos ao ouvir clientes"
+  },
+  // SELEÇÃO DE CLIENTES (17-22)
+  {
+    question: "Segundo o material, é verdade que todos os clientes interessam para um negócio?",
+    options: ["Sim, todos os clientes são importantes","Não, alguns clientes podem ser tão danosos que mantê-los representa mais problemas do que deixá-los partir","Sim, mas apenas em grandes empresas","Depende apenas do setor de atuação"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  {
+    question: "Quais são as três perguntas fundamentais que uma empresa deve saber responder para avaliar se um cliente é estratégico?",
+    options: ["Quem é? Onde mora? Quanto compra?","O que está oferecendo? Quão diferente é isso da concorrência? Quanto ganha?","É fiel? É rentável? É influente?","Compra muito? Paga em dia? Reclama pouco?"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  {
+    question: "Para selecionar adequadamente clientes, o que é necessário segundo o material?",
+    options: ["Apenas intuição do gestor","Estar respaldado por estatísticas históricas que mostram a evolução do cliente","Seguir o que a concorrência faz","Aceitar todos os clientes igualmente"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  {
+    question: "A seleção de clientes é uma medida estratégica porque:",
+    options: ["Reduz custos operacionais imediatamente","Considera a viabilidade de curto, médio e longo prazos de cada cliente e o tipo de clientes que os concorrentes possuem","Permite demitir funcionários","Aumenta o preço dos produtos"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  {
+    question: "O que significa a sigla NPS?",
+    options: ["New Product System","Net Promoter Score","National Performance Standard","Network Processing Service"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  {
+    question: "Qual é a pergunta central do NPS (Net Promoter Score)?",
+    options: ["Você está satisfeito com nosso produto?","O quanto você nos recomendaria a empresa/produto para um amigo ou parente? (escala 0-10)","Você voltaria a comprar conosco?","Qual nota você dá para nosso atendimento?"],
+    correct: 1, topic: "Seleção de clientes"
+  },
+  // CRM (23-29)
+  {
+    question: "O que significa a sigla CRM?",
+    options: ["Customer Relations Manager","Corporate Risk Management","Customer Relationship Management","Client Revenue Monitoring"],
+    correct: 2, topic: "CRM"
+  },
+  {
+    question: "Segundo Peppers e Rogers (2001), o que envolve CRM do ponto de vista tecnológico?",
+    options: ["Apenas capturar dados dos clientes","Capturar dados, consolidar em banco central, analisar, distribuir resultados e usar ao interagir com cliente","Somente armazenar informações de vendas","Criar campanhas de marketing"],
+    correct: 1, topic: "CRM"
+  },
+  {
+    question: "Qual é a principal diferença do CRM em relação aos sistemas tradicionais?",
+    options: ["CRM é mais caro","CRM tem total preocupação com o cliente, que passa a ser o centro do modelo de dados","CRM é mais rápido","CRM usa tecnologia mais avançada"],
+    correct: 1, topic: "CRM"
+  },
+  {
+    question: "Qual é o principal objetivo do CRM?",
+    options: ["Reduzir custos operacionais","Ajudar a empresa a organizar o processo de gestão de vendas e criar a melhor experiência do cliente","Automatizar processos internos","Substituir funcionários por sistemas"],
+    correct: 1, topic: "CRM"
+  },
+  {
+    question: "O CRM permite conhecer leads e clientes em um nível mais aprofundado. O que ele ajuda a entender?",
+    options: ["Apenas dados demográficos","Detalhes sobre comportamentos, tendências e necessidades","Somente histórico de compras","Apenas informações de contato"],
+    correct: 1, topic: "CRM"
+  },
+  {
+    question: "Quais tipos de informações um CRM software capta ao entrar em contato com um cliente?",
+    options: ["Apenas nome e telefone","Nome, telefone, endereço, e-mail, ações no site, produtos/serviços comprados, etc.","Somente histórico de compras","Apenas dados financeiros"],
+    correct: 1, topic: "CRM"
+  },
+  {
+    question: "Qual das seguintes NÃO é uma ferramenta/componente típico de CRM mencionado no material?",
+    options: ["Call Center","Help Desk","Automação de vendas","Gestão de estoque"],
+    correct: 3, topic: "CRM"
+  },
+  // PERFIL DO ATENDENTE (30-33)
+  {
+    question: "Quantas características/habilidades principais devem ter os atendentes que interagem com clientes, segundo o material?",
+    options: ["3 características","4 características","5 características","6 características"],
+    correct: 2, topic: "Perfil do atendente"
+  },
+  {
+    question: "O que significa 'autossuficiência técnica' no perfil do atendente?",
+    options: ["Saber consertar equipamentos","Conhecer a empresa, o que ela faz e o que fazem suas várias áreas/setores para entender e encaminhar solicitações","Ter diploma técnico","Saber programar computadores"],
+    correct: 1, topic: "Perfil do atendente"
+  },
+  {
+    question: "O que é empatia no contexto do atendimento ao cliente?",
+    options: ["Ser simpático com todos","Capacidade de colocar-se no lugar do cliente e sentir como ele","Concordar com tudo que o cliente diz","Oferecer descontos"],
+    correct: 1, topic: "Perfil do atendente"
+  },
+  {
+    question: "Para que se possa dar autonomia a um atendente resolver problemas, o que é necessário?",
+    options: ["Apenas boa vontade","Autossuficiência técnica e acesso às informações necessárias","Muitos anos de experiência","Apenas autorização da diretoria"],
+    correct: 1, topic: "Perfil do atendente"
+  },
+  // SATISFAÇÃO (34-35)
+  {
+    question: "Segundo Kotler (2000), qual é a fórmula da satisfação do cliente?",
+    options: ["Satisfação = Qualidade - Preço","Satisfação = Desempenho versus Expectativas","Satisfação = Produto + Serviço","Satisfação = Benefícios - Custos"],
+    correct: 1, topic: "Satisfação dos clientes"
+  },
+  {
+    question: "Quais são os métodos sugeridos por Philip Kotler para acompanhar e medir a satisfação dos clientes?",
+    options: ["Apenas pesquisas online","Sistemas de Reclamações/Sugestões, Pesquisas de Satisfação, Compras Simuladas, Análise de Clientes Perdidos","Somente análise de vendas","Apenas feedback em redes sociais"],
+    correct: 1, topic: "Satisfação dos clientes"
+  }
+];
+
+// ── STATE ────────────────────────────────────────────────
+let currentQ = 0;
+let selectedAnswer = null;
+let showResult = false;
+let score = 0;
+let answered = [];
+
+// ── ELEMENTS ─────────────────────────────────────────────
+const quizView   = document.getElementById('quiz-view');
+const resultView = document.getElementById('result-view');
+const qCounter   = document.getElementById('q-counter');
+const progressFill = document.getElementById('progress-fill');
+const topicLabel = document.getElementById('topic-label');
+const scoreLabel = document.getElementById('score-label');
+const questionText = document.getElementById('question-text');
+const optionsEl  = document.getElementById('options');
+const nextWrap   = document.getElementById('next-wrap');
+const nextBtn    = document.getElementById('next-btn');
+const nextLabel  = document.getElementById('next-label');
+const resetBtn   = document.getElementById('reset-btn');
+
+// SVGs
+const svgCheck = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+const svgX     = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+
+// ── RENDER QUIZ ──────────────────────────────────────────
+function render() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  const pct = ((currentQ + 1) / total) * 100;
+
+  qCounter.textContent   = `${currentQ + 1}/${total}`;
+  progressFill.style.width = `${pct}%`;
+  topicLabel.textContent  = q.topic;
+  scoreLabel.textContent  = `Pontuação: ${score}/${currentQ}`;
+  questionText.textContent = q.question;
+
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.disabled  = showResult;
+
+    const isCorrect  = i === q.correct;
+    const isSelected = i === selectedAnswer;
+
+    if (showResult) {
+      if (isCorrect)               btn.classList.add('correct');
+      else if (isSelected)         btn.classList.add('wrong');
+      else                         btn.classList.add('dimmed');
+    }
+
+    const iconHTML = showResult
+      ? (isCorrect ? svgCheck : (isSelected ? svgX : ''))
+      : '';
+
+    btn.innerHTML = `<span>${opt}</span>${iconHTML}`;
+    btn.addEventListener('click', () => handleAnswer(i));
+    optionsEl.appendChild(btn);
+  });
+
+  if (showResult) {
+    nextWrap.classList.remove('hidden');
+    nextLabel.textContent = currentQ < total - 1 ? 'Próxima Questão' : 'Ver Resultado Final';
+  } else {
+    nextWrap.classList.add('hidden');
+  }
+}
+
+function handleAnswer(i) {
+  if (showResult) return;
+  selectedAnswer = i;
+  showResult = true;
+  const isCorrect = i === questions[currentQ].correct;
+  if (isCorrect) score++;
+  answered.push({ question: currentQ, selected: i, correct: questions[currentQ].correct, isCorrect });
+  render();
+}
+
+nextBtn.addEventListener('click', () => {
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    selectedAnswer = null;
+    showResult = false;
+    render();
+  } else {
+    renderResult();
+  }
+});
+
+// ── RENDER RESULT ────────────────────────────────────────
+function renderResult() {
+  quizView.classList.add('hidden');
+  resultView.classList.remove('hidden');
+
+  const pct = ((score / questions.length) * 100).toFixed(1);
+  document.getElementById('score-big').textContent = `${score}/${questions.length}`;
+  document.getElementById('score-pct').textContent = `Pontuação: ${pct}%`;
+
+  const perfEl = document.getElementById('perf-msg');
+  const p = parseFloat(pct);
+  if (p >= 90) { perfEl.textContent = 'Excelente! Você domina o conteúdo!'; perfEl.className = 'perf-msg perf-green'; }
+  else if (p >= 70) { perfEl.textContent = 'Muito bom! Bom conhecimento da matéria.'; perfEl.className = 'perf-msg perf-blue'; }
+  else if (p >= 50) { perfEl.textContent = 'Razoável. Revise alguns conceitos.'; perfEl.className = 'perf-msg perf-yellow'; }
+  else { perfEl.textContent = 'É preciso estudar mais. Revise todo o conteúdo.'; perfEl.className = 'perf-msg perf-red'; }
+
+  // topics breakdown
+  const stats = {};
+  questions.forEach((q, idx) => {
+    if (!stats[q.topic]) stats[q.topic] = { total: 0, correct: 0 };
+    stats[q.topic].total++;
+    const a = answered.find(x => x.question === idx);
+    if (a && a.isCorrect) stats[q.topic].correct++;
+  });
+
+  const breakdown = document.getElementById('topics-breakdown');
+  breakdown.innerHTML = '';
+  Object.entries(stats).forEach(([topic, s]) => {
+    const barPct = ((s.correct / s.total) * 100).toFixed(0);
+    breakdown.innerHTML += `
+      <div class="topic-row">
+        <div class="topic-row-meta">
+          <span class="topic-name">${topic}</span>
+          <span class="topic-stats">${s.correct}/${s.total} (${barPct}%)</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
+      </div>`;
+  });
+}
+
+resetBtn.addEventListener('click', () => {
+  currentQ = 0; selectedAnswer = null; showResult = false; score = 0; answered = [];
+  resultView.classList.add('hidden');
+  quizView.classList.remove('hidden');
+  render();
+});
+
+// Init
+render();
+</script>
+</body>
+</html>
