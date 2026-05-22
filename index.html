@@ -198,6 +198,74 @@
 
     .result-footer { display: flex; justify-content: center; margin-top: 2rem; }
 
+
+
+    .feedback-box {
+      margin-top: 1.25rem;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+    }
+    .feedback-box.feedback-error {
+      background: #fff7ed;
+      border-color: #fdba74;
+    }
+    .feedback-title {
+      font-family: 'Sora', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: .45rem;
+    }
+    .feedback-answer {
+      font-size: .92rem;
+      color: var(--gray-700);
+      margin-bottom: .45rem;
+    }
+    .feedback-answer strong { color: var(--green); }
+    .feedback-explanation {
+      font-size: .92rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+    .review-wrap {
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1.5rem;
+    }
+    .review-item {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: .9rem;
+    }
+    .review-item h3 {
+      font-family:'Sora',sans-serif;
+      font-size: .98rem;
+      color: var(--gray-800);
+      margin-bottom: .5rem;
+      line-height: 1.45;
+    }
+    .review-meta {
+      font-size: .88rem;
+      color: var(--gray-500);
+      margin-bottom: .45rem;
+    }
+    .review-answer {
+      color: var(--gray-700);
+      font-size: .92rem;
+      margin-bottom: .4rem;
+      line-height: 1.5;
+    }
+    .review-answer strong { color: var(--green); }
+    .review-explanation {
+      color: var(--gray-700);
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+
     /* hidden by default */
     .hidden { display: none !important; }
 
@@ -234,6 +302,7 @@
     <div class="card">
       <p class="question-text" id="question-text"></p>
       <div class="options" id="options"></div>
+      <div id="feedback-box" class="feedback-box hidden"></div>
     </div>
 
     <div class="next-wrap hidden" id="next-wrap">
@@ -269,6 +338,11 @@
       <p class="topics-title">Distribuição por Tópico:</p>
       <div id="topics-breakdown"></div>
 
+      <div id="wrong-review-wrap" class="review-wrap hidden">
+        <p class="topics-title">Revisão das questões erradas</p>
+        <div id="wrong-review-list"></div>
+      </div>
+
       <div class="result-footer">
         <button class="btn-primary" id="reset-btn">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -285,186 +359,250 @@
 
 <script>
 const questions = [
-  // INSTRUMENTOS PARA OUVIR O CLIENTE (1-8)
   {
     question: "Segundo Sheth, quais são os três componentes de atitudes que influenciam o comportamento do cliente?",
-    options: ["Racional, emocional e prático","Cognitivo, afetivo e conativo","Declarado, real e secreto","Técnico, comercial e operacional"],
-    correct: 1, topic: "Instrumentos para ouvir o cliente"
+    options: ["Racional, emocional e prático", "Cognitivo, afetivo e conativo", "Declarado, real e secreto", "Técnico, comercial e operacional"],
+    correct: 1,
+    explanation: "Segundo o material, Sheth divide as atitudes em três componentes: cognitivo (pensamento), afetivo (sentimento) e conativo (ação). Eles ajudam a explicar como o cliente pensa, sente e age diante de uma compra.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "A equipe de antropólogos da Whirlpool (Brastemp) visitou residências para observar o uso de lavadoras e secadoras. Qual foi a principal descoberta que levou ao desenvolvimento de botões coloridos e ilustrados?",
-    options: ["As donas de casa preferiam máquinas mais coloridas","Muitas donas de casa eram ocupadas e outras pessoas (homens e crianças) também operavam as máquinas","Os botões anteriores quebravam com facilidade","As máquinas precisavam ser mais tecnológicas"],
-    correct: 1, topic: "Instrumentos para ouvir o cliente"
+    options: ["As donas de casa preferiam máquinas mais coloridas", "Muitas donas de casa eram ocupadas e outras pessoas (homens e crianças) também operavam as máquinas", "Os botões anteriores quebravam com facilidade", "As máquinas precisavam ser mais tecnológicas"],
+    correct: 1,
+    explanation: "A observação mostrou que muitas donas de casa eram muito ocupadas e que homens e crianças também usavam as máquinas. Por isso os engenheiros criaram botões mais visuais e intuitivos.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "Segundo Juran (1992), qual é a diferença fundamental entre o que os clientes declaram e o que realmente necessitam?",
-    options: ["Clientes declaram necessidades em termos de bens, mas suas necessidades reais são pelos serviços que aqueles bens podem prestar","Clientes sempre sabem exatamente o que precisam","Não há diferença significativa entre necessidade declarada e real","Clientes nunca conseguem expressar suas necessidades verdadeiras"],
-    correct: 0, topic: "Instrumentos para ouvir o cliente"
+    options: ["Clientes declaram necessidades em termos de bens, mas suas necessidades reais são pelos serviços que aqueles bens podem prestar", "Clientes sempre sabem exatamente o que precisam", "Não há diferença significativa entre necessidade declarada e real", "Clientes nunca conseguem expressar suas necessidades verdadeiras"],
+    correct: 0,
+    explanation: "Juran explica que o cliente costuma declarar a necessidade em termos do bem que quer comprar, mas a necessidade real está no benefício ou serviço que esse bem presta.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "Quantos tipos de necessidades do cliente são apresentados na classificação que inclui 'necessidade declarada', 'necessidade real', etc.?",
-    options: ["3 tipos","4 tipos","5 tipos","6 tipos"],
-    correct: 2, topic: "Instrumentos para ouvir o cliente"
+    options: ["3 tipos", "4 tipos", "5 tipos", "6 tipos"],
+    correct: 2,
+    explanation: "O material apresenta cinco tipos: necessidade declarada, necessidade real, necessidade não declarada, necessidade de “algo mais” e necessidade secreta.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "Segundo Michael Porter, como é determinada a vantagem competitiva?",
-    options: ["Pelo menor preço do mercado","Pelo valor que a empresa consegue criar para seus clientes e que ultrapassa os custos de produção","Pela maior quantidade de produtos vendidos","Pela tecnologia mais avançada utilizada"],
-    correct: 1, topic: "Instrumentos para ouvir o cliente"
+    options: ["Pelo menor preço do mercado", "Pelo valor que a empresa consegue criar para seus clientes e que ultrapassa os custos de produção", "Pela maior quantidade de produtos vendidos", "Pela tecnologia mais avançada utilizada"],
+    correct: 1,
+    explanation: "Para Porter, a vantagem competitiva vem do valor que a empresa cria para o cliente acima do custo de produzir esse valor. Não é só vender mais ou cobrar menos.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "Qual é a fórmula apresentada para o 'Valor para o cliente'?",
-    options: ["Preço - Custo de produção","Qualidade × Quantidade","O que o cliente obteve / O que custou para o cliente","Benefícios + Características - Preço"],
-    correct: 2, topic: "Instrumentos para ouvir o cliente"
+    options: ["Preço - Custo de produção", "Qualidade × Quantidade", "O que o cliente obteve / O que custou para o cliente", "Benefícios + Características - Preço"],
+    correct: 2,
+    explanation: "A fórmula do material é: valor para o cliente = o que o cliente obteve ÷ o que custou para o cliente. Ou seja, o cliente compara benefícios percebidos com o custo total.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "O que representa um 'valor superior' para o cliente, segundo o material?",
-    options: ["Sempre o produto mais barato disponível","Produto com características idênticas à concorrência por preço mais baixo OU produto com benefícios superiores que compensam um preço mais elevado","Apenas produtos premium com preços elevados","Produtos que seguem tendências de mercado"],
-    correct: 1, topic: "Instrumentos para ouvir o cliente"
+    options: ["Sempre o produto mais barato disponível", "Produto com características idênticas à concorrência por preço mais baixo OU produto com benefícios superiores que compensam um preço mais elevado", "Apenas produtos premium com preços elevados", "Produtos que seguem tendências de mercado"],
+    correct: 1,
+    explanation: "Valor superior surge quando a empresa oferece algo equivalente por preço menor ou entrega benefícios melhores que compensam um preço maior.",
+    topic: "Instrumentos para ouvir o cliente"
   },
   {
     question: "Jack Welch, CEO da General Eletrics, ao ser questionado por um funcionário sobre como garantir o emprego, respondeu:",
-    options: ["Trabalhe mais horas","Seja mais produtivo","Quem pode garantir-lhe o emprego são os nossos clientes","Depende do seu desempenho individual"],
-    correct: 2, topic: "Instrumentos para ouvir o cliente"
+    options: ["Trabalhe mais horas", "Seja mais produtivo", "Quem pode garantir-lhe o emprego são os nossos clientes", "Depende do seu desempenho individual"],
+    correct: 2,
+    explanation: "A ideia central da resposta de Jack Welch é que quem sustenta a empresa são os clientes. Se eles estão satisfeitos e continuam comprando, o negócio prospera.",
+    topic: "Instrumentos para ouvir o cliente"
   },
-  // RISCOS AO OUVIR CLIENTES (9-16)
   {
     question: "Segundo Hamel e Prahalad (1995), em vez de perguntar ao cliente o produto/serviço que ele deseja, o que deve ser feito?",
-    options: ["Oferecer o produto mais barato","Investigar quais suas necessidades não atendidas (no todo ou em parte)","Copiar o que a concorrência está fazendo","Desenvolver produtos baseados apenas em tecnologia"],
-    correct: 1, topic: "Riscos ao ouvir clientes"
+    options: ["Oferecer o produto mais barato", "Investigar quais suas necessidades não atendidas (no todo ou em parte)", "Copiar o que a concorrência está fazendo", "Desenvolver produtos baseados apenas em tecnologia"],
+    correct: 1,
+    explanation: "Hamel e Prahalad defendem que a empresa deve investigar necessidades ainda não atendidas, e não apenas reagir ao que o cliente já consegue verbalizar.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "Quantos tipos de empresas são descritos por Hamel e Prahalad em relação ao tratamento com clientes?",
-    options: ["2 tipos","3 tipos","4 tipos","5 tipos"],
-    correct: 1, topic: "Riscos ao ouvir clientes"
+    options: ["2 tipos", "3 tipos", "4 tipos", "5 tipos"],
+    correct: 1,
+    explanation: "O material cita três tipos: as que tentam levar os clientes para onde eles não querem ir, as que respondem às necessidades articuladas e as que criam o futuro.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "Qual tipo de empresa Hamel e Prahalad consideram como 'empresas que criam o futuro'?",
-    options: ["As que tentam levar os clientes para onde eles não querem ir","As que escutam os clientes e respondem às suas necessidades articuladas","As que levam os clientes para onde eles querem ir, mas ainda não sabem disso","As que copiam a concorrência"],
-    correct: 2, topic: "Riscos ao ouvir clientes"
+    options: ["As que tentam levar os clientes para onde eles não querem ir", "As que escutam os clientes e respondem às suas necessidades articuladas", "As que levam os clientes para onde eles querem ir, mas ainda não sabem disso", "As que copiam a concorrência"],
+    correct: 2,
+    explanation: "São as empresas que levam os clientes para onde eles querem ir, mas ainda não sabem disso. Elas antecipam necessidades e constroem o futuro do mercado.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "O que é valor subjetivo segundo o material apresentado?",
-    options: ["O custo de produção do produto","O valor de um bem ou serviço determinado pela importância que um indivíduo atribui a ele para satisfazer suas necessidades e desejos","O preço de mercado estabelecido pela concorrência","O lucro da empresa"],
-    correct: 1, topic: "Riscos ao ouvir clientes"
+    options: ["O custo de produção do produto", "O valor de um bem ou serviço determinado pela importância que um indivíduo atribui a ele para satisfazer suas necessidades e desejos", "O preço de mercado estabelecido pela concorrência", "O lucro da empresa"],
+    correct: 1,
+    explanation: "Valor subjetivo é o valor percebido na mente de quem deseja adquirir algo. Portanto, depende da importância que cada pessoa atribui ao bem ou serviço para satisfazer seus desejos e necessidades.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "Charles Revson, da Revlon, exemplificou o valor subjetivo dizendo: 'Quando ele sai da fábrica é batom, mas quando passa por cima do balcão da loja de departamentos, é ______.'",
-    options: ["Beleza","Luxo","Esperança","Glamour"],
-    correct: 2, topic: "Riscos ao ouvir clientes"
+    options: ["Beleza", "Luxo", "Esperança", "Glamour"],
+    correct: 2,
+    explanation: "A frase mostra que o produto físico pode ter um significado simbólico para o cliente. No caso do batom, Revson dizia que, para a cliente, ele vende “esperança”.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "Quem criou o conceito de 'Miopia de Marketing' em 1960?",
-    options: ["Philip Kotler","Michael Porter","Theodore Levitt","Peter Drucker"],
-    correct: 2, topic: "Riscos ao ouvir clientes"
+    options: ["Philip Kotler", "Michael Porter", "Theodore Levitt", "Peter Drucker"],
+    correct: 2,
+    explanation: "O conceito de Miopia de Marketing foi criado por Theodore Levitt em 1960 para alertar empresas que enxergam só o produto e ignoram a necessidade atendida.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "Segundo o conceito de Miopia de Marketing, qual é o erro fatal que empresas cometem?",
-    options: ["Cobrar preços muito altos","Focar demais no produto (preço e características) e esquecer as necessidades do cliente (valor)","Investir pouco em marketing","Contratar funcionários inadequados"],
-    correct: 1, topic: "Riscos ao ouvir clientes"
+    options: ["Cobrar preços muito altos", "Focar demais no produto (preço e características) e esquecer as necessidades do cliente (valor)", "Investir pouco em marketing", "Contratar funcionários inadequados"],
+    correct: 1,
+    explanation: "O erro fatal é concentrar-se demais em preço e características do produto e esquecer o valor percebido e as necessidades reais do cliente.",
+    topic: "Riscos ao ouvir clientes"
   },
   {
     question: "No exemplo clássico de Miopia de Marketing, por que as ferrovias perderam mercado para carros e aviões?",
-    options: ["Porque os trens ficaram muito caros","Porque achavam que estavam no 'negócio de trens' quando na verdade estavam no 'negócio de transportes'","Porque não investiram em tecnologia","Porque os funcionários não eram qualificados"],
-    correct: 1, topic: "Riscos ao ouvir clientes"
+    options: ["Porque os trens ficaram muito caros", "Porque achavam que estavam no 'negócio de trens' quando na verdade estavam no 'negócio de transportes'", "Porque não investiram em tecnologia", "Porque os funcionários não eram qualificados"],
+    correct: 1,
+    explanation: "Porque se viam no negócio de trens, e não no negócio de transportes. Essa visão limitada impediu que percebessem novas formas de atender à mesma necessidade do cliente.",
+    topic: "Riscos ao ouvir clientes"
   },
-  // SELEÇÃO DE CLIENTES (17-22)
   {
     question: "Segundo o material, é verdade que todos os clientes interessam para um negócio?",
-    options: ["Sim, todos os clientes são importantes","Não, alguns clientes podem ser tão danosos que mantê-los representa mais problemas do que deixá-los partir","Sim, mas apenas em grandes empresas","Depende apenas do setor de atuação"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["Sim, todos os clientes são importantes", "Não, alguns clientes podem ser tão danosos que mantê-los representa mais problemas do que deixá-los partir", "Sim, mas apenas em grandes empresas", "Depende apenas do setor de atuação"],
+    correct: 1,
+    explanation: "Não. O material diz que alguns clientes podem ser tão danosos e pouco rentáveis que mantê-los gera mais problemas do que deixá-los partir.",
+    topic: "Seleção de clientes"
   },
   {
     question: "Quais são as três perguntas fundamentais que uma empresa deve saber responder para avaliar se um cliente é estratégico?",
-    options: ["Quem é? Onde mora? Quanto compra?","O que está oferecendo? Quão diferente é isso da concorrência? Quanto ganha?","É fiel? É rentável? É influente?","Compra muito? Paga em dia? Reclama pouco?"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["Quem é? Onde mora? Quanto compra?", "O que está oferecendo? Quão diferente é isso da concorrência? Quanto ganha?", "É fiel? É rentável? É influente?", "Compra muito? Paga em dia? Reclama pouco?"],
+    correct: 1,
+    explanation: "O texto apresenta três perguntas: o que está oferecendo, quão diferente isso é em relação à concorrência e quanto ganha com isso. Elas ajudam a avaliar valor, diferenciação e rentabilidade.",
+    topic: "Seleção de clientes"
   },
   {
     question: "Para selecionar adequadamente clientes, o que é necessário segundo o material?",
-    options: ["Apenas intuição do gestor","Estar respaldado por estatísticas históricas que mostram a evolução do cliente","Seguir o que a concorrência faz","Aceitar todos os clientes igualmente"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["Apenas intuição do gestor", "Estar respaldado por estatísticas históricas que mostram a evolução do cliente", "Seguir o que a concorrência faz", "Aceitar todos os clientes igualmente"],
+    correct: 1,
+    explanation: "A seleção não deve ser feita no improviso. O material destaca a necessidade de respaldo em dados e estatísticas históricas para acompanhar a evolução e a rentabilidade do cliente.",
+    topic: "Seleção de clientes"
   },
   {
     question: "A seleção de clientes é uma medida estratégica porque:",
-    options: ["Reduz custos operacionais imediatamente","Considera a viabilidade de curto, médio e longo prazos de cada cliente e o tipo de clientes que os concorrentes possuem","Permite demitir funcionários","Aumenta o preço dos produtos"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["Reduz custos operacionais imediatamente", "Considera a viabilidade de curto, médio e longo prazos de cada cliente e o tipo de clientes que os concorrentes possuem", "Permite demitir funcionários", "Aumenta o preço dos produtos"],
+    correct: 1,
+    explanation: "Ela considera a viabilidade de curto, médio e longo prazo de cada cliente e também o perfil dos clientes atendidos pelos concorrentes antes de decidir onde investir esforços.",
+    topic: "Seleção de clientes"
   },
   {
     question: "O que significa a sigla NPS?",
-    options: ["New Product System","Net Promoter Score","National Performance Standard","Network Processing Service"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["New Product System", "Net Promoter Score", "National Performance Standard", "Network Processing Service"],
+    correct: 1,
+    explanation: "NPS significa Net Promoter Score, uma métrica muito usada para medir o potencial de recomendação e a percepção do cliente sobre a empresa ou produto.",
+    topic: "Seleção de clientes"
   },
   {
     question: "Qual é a pergunta central do NPS (Net Promoter Score)?",
-    options: ["Você está satisfeito com nosso produto?","O quanto você nos recomendaria a empresa/produto para um amigo ou parente? (escala 0-10)","Você voltaria a comprar conosco?","Qual nota você dá para nosso atendimento?"],
-    correct: 1, topic: "Seleção de clientes"
+    options: ["Você está satisfeito com nosso produto?", "O quanto você nos recomendaria a empresa/produto para um amigo ou parente? (escala 0-10)", "Você voltaria a comprar conosco?", "Qual nota você dá para nosso atendimento?"],
+    correct: 1,
+    explanation: "A pergunta clássica do NPS mede recomendação em escala de 0 a 10: o quanto o cliente indicaria a empresa ou o produto para um amigo ou parente.",
+    topic: "Seleção de clientes"
   },
-  // CRM (23-29)
   {
     question: "O que significa a sigla CRM?",
-    options: ["Customer Relations Manager","Corporate Risk Management","Customer Relationship Management","Client Revenue Monitoring"],
-    correct: 2, topic: "CRM"
+    options: ["Customer Relations Manager", "Corporate Risk Management", "Customer Relationship Management", "Client Revenue Monitoring"],
+    correct: 2,
+    explanation: "CRM significa Customer Relationship Management, em português Gestão de Relacionamento com o Cliente.",
+    topic: "CRM"
   },
   {
     question: "Segundo Peppers e Rogers (2001), o que envolve CRM do ponto de vista tecnológico?",
-    options: ["Apenas capturar dados dos clientes","Capturar dados, consolidar em banco central, analisar, distribuir resultados e usar ao interagir com cliente","Somente armazenar informações de vendas","Criar campanhas de marketing"],
-    correct: 1, topic: "CRM"
+    options: ["Apenas capturar dados dos clientes", "Capturar dados, consolidar em banco central, analisar, distribuir resultados e usar ao interagir com cliente", "Somente armazenar informações de vendas", "Criar campanhas de marketing"],
+    correct: 1,
+    explanation: "No aspecto tecnológico, CRM envolve captar dados, centralizá-los em um banco, analisá-los, distribuir os resultados e usar essas informações nos contatos com o cliente.",
+    topic: "CRM"
   },
   {
     question: "Qual é a principal diferença do CRM em relação aos sistemas tradicionais?",
-    options: ["CRM é mais caro","CRM tem total preocupação com o cliente, que passa a ser o centro do modelo de dados","CRM é mais rápido","CRM usa tecnologia mais avançada"],
-    correct: 1, topic: "CRM"
+    options: ["CRM é mais caro", "CRM tem total preocupação com o cliente, que passa a ser o centro do modelo de dados", "CRM é mais rápido", "CRM usa tecnologia mais avançada"],
+    correct: 1,
+    explanation: "A diferença principal é que, no CRM, o cliente vira o centro do modelo de dados e das decisões, enquanto os sistemas tradicionais costumam ser mais centrados em processos internos.",
+    topic: "CRM"
   },
   {
     question: "Qual é o principal objetivo do CRM?",
-    options: ["Reduzir custos operacionais","Ajudar a empresa a organizar o processo de gestão de vendas e criar a melhor experiência do cliente","Automatizar processos internos","Substituir funcionários por sistemas"],
-    correct: 1, topic: "CRM"
+    options: ["Reduzir custos operacionais", "Ajudar a empresa a organizar o processo de gestão de vendas e criar a melhor experiência do cliente", "Automatizar processos internos", "Substituir funcionários por sistemas"],
+    correct: 1,
+    explanation: "O CRM busca organizar a gestão de vendas e relacionamento para oferecer uma experiência melhor ao cliente, com mais conhecimento e personalização.",
+    topic: "CRM"
   },
   {
     question: "O CRM permite conhecer leads e clientes em um nível mais aprofundado. O que ele ajuda a entender?",
-    options: ["Apenas dados demográficos","Detalhes sobre comportamentos, tendências e necessidades","Somente histórico de compras","Apenas informações de contato"],
-    correct: 1, topic: "CRM"
+    options: ["Apenas dados demográficos", "Detalhes sobre comportamentos, tendências e necessidades", "Somente histórico de compras", "Apenas informações de contato"],
+    correct: 1,
+    explanation: "Com CRM, a empresa compreende melhor comportamentos, tendências e necessidades, e não apenas dados cadastrais ou compras isoladas.",
+    topic: "CRM"
   },
   {
     question: "Quais tipos de informações um CRM software capta ao entrar em contato com um cliente?",
-    options: ["Apenas nome e telefone","Nome, telefone, endereço, e-mail, ações no site, produtos/serviços comprados, etc.","Somente histórico de compras","Apenas dados financeiros"],
-    correct: 1, topic: "CRM"
+    options: ["Apenas nome e telefone", "Nome, telefone, endereço, e-mail, ações no site, produtos/serviços comprados, etc.", "Somente histórico de compras", "Apenas dados financeiros"],
+    correct: 1,
+    explanation: "Um CRM registra dados de contato, interações, comportamento no site, histórico de compras e outras informações úteis para o relacionamento e a tomada de decisão.",
+    topic: "CRM"
   },
   {
     question: "Qual das seguintes NÃO é uma ferramenta/componente típico de CRM mencionado no material?",
-    options: ["Call Center","Help Desk","Automação de vendas","Gestão de estoque"],
-    correct: 3, topic: "CRM"
+    options: ["Call Center", "Help Desk", "Automação de vendas", "Gestão de estoque"],
+    correct: 3,
+    explanation: "Call center, help desk e automação de vendas aparecem como componentes ligados ao CRM. Gestão de estoque pertence a outra frente de administração.",
+    topic: "CRM"
   },
-  // PERFIL DO ATENDENTE (30-33)
   {
     question: "Quantas características/habilidades principais devem ter os atendentes que interagem com clientes, segundo o material?",
-    options: ["3 características","4 características","5 características","6 características"],
-    correct: 2, topic: "Perfil do atendente"
+    options: ["3 características", "4 características", "5 características", "6 características"],
+    correct: 2,
+    explanation: "O material lista cinco competências principais: autossuficiência técnica, habilidade de comunicação, cortesia e empatia, capacidade de gerenciar crises e autonomia para resolver problemas.",
+    topic: "Perfil do atendente"
   },
   {
     question: "O que significa 'autossuficiência técnica' no perfil do atendente?",
-    options: ["Saber consertar equipamentos","Conhecer a empresa, o que ela faz e o que fazem suas várias áreas/setores para entender e encaminhar solicitações","Ter diploma técnico","Saber programar computadores"],
-    correct: 1, topic: "Perfil do atendente"
+    options: ["Saber consertar equipamentos", "Conhecer a empresa, o que ela faz e o que fazem suas várias áreas/setores para entender e encaminhar solicitações", "Ter diploma técnico", "Saber programar computadores"],
+    correct: 1,
+    explanation: "Significa conhecer a empresa, seus setores e seus processos para entender, solucionar ou encaminhar adequadamente o que o cliente solicita.",
+    topic: "Perfil do atendente"
   },
   {
     question: "O que é empatia no contexto do atendimento ao cliente?",
-    options: ["Ser simpático com todos","Capacidade de colocar-se no lugar do cliente e sentir como ele","Concordar com tudo que o cliente diz","Oferecer descontos"],
-    correct: 1, topic: "Perfil do atendente"
+    options: ["Ser simpático com todos", "Capacidade de colocar-se no lugar do cliente e sentir como ele", "Concordar com tudo que o cliente diz", "Oferecer descontos"],
+    correct: 1,
+    explanation: "Empatia é a capacidade de se colocar no lugar do cliente e compreender como ele se sente diante da situação apresentada.",
+    topic: "Perfil do atendente"
   },
   {
     question: "Para que se possa dar autonomia a um atendente resolver problemas, o que é necessário?",
-    options: ["Apenas boa vontade","Autossuficiência técnica e acesso às informações necessárias","Muitos anos de experiência","Apenas autorização da diretoria"],
-    correct: 1, topic: "Perfil do atendente"
+    options: ["Apenas boa vontade", "Autossuficiência técnica e acesso às informações necessárias", "Muitos anos de experiência", "Apenas autorização da diretoria"],
+    correct: 1,
+    explanation: "A autonomia só funciona quando o atendente tem conhecimento técnico e acesso às informações necessárias para decidir com segurança.",
+    topic: "Perfil do atendente"
   },
-  // SATISFAÇÃO (34-35)
   {
     question: "Segundo Kotler (2000), qual é a fórmula da satisfação do cliente?",
-    options: ["Satisfação = Qualidade - Preço","Satisfação = Desempenho versus Expectativas","Satisfação = Produto + Serviço","Satisfação = Benefícios - Custos"],
-    correct: 1, topic: "Satisfação dos clientes"
+    options: ["Satisfação = Qualidade - Preço", "Satisfação = Desempenho versus Expectativas", "Satisfação = Produto + Serviço", "Satisfação = Benefícios - Custos"],
+    correct: 1,
+    explanation: "Para Kotler, satisfação depende da comparação entre o desempenho percebido e as expectativas do cliente. Se o desempenho atende ou supera a expectativa, a satisfação aumenta.",
+    topic: "Satisfação dos clientes"
   },
   {
     question: "Quais são os métodos sugeridos por Philip Kotler para acompanhar e medir a satisfação dos clientes?",
-    options: ["Apenas pesquisas online","Sistemas de Reclamações/Sugestões, Pesquisas de Satisfação, Compras Simuladas, Análise de Clientes Perdidos","Somente análise de vendas","Apenas feedback em redes sociais"],
-    correct: 1, topic: "Satisfação dos clientes"
+    options: ["Apenas pesquisas online", "Sistemas de Reclamações/Sugestões, Pesquisas de Satisfação, Compras Simuladas, Análise de Clientes Perdidos", "Somente análise de vendas", "Apenas feedback em redes sociais"],
+    correct: 1,
+    explanation: "Kotler cita quatro métodos principais: sistemas de reclamações e sugestões, pesquisas de satisfação, compras simuladas e análise de clientes perdidos.",
+    topic: "Satisfação dos clientes"
   }
 ];
 
@@ -484,6 +622,7 @@ const topicLabel = document.getElementById('topic-label');
 const scoreLabel = document.getElementById('score-label');
 const questionText = document.getElementById('question-text');
 const optionsEl  = document.getElementById('options');
+const feedbackBox = document.getElementById('feedback-box');
 const nextWrap   = document.getElementById('next-wrap');
 const nextBtn    = document.getElementById('next-btn');
 const nextLabel  = document.getElementById('next-label');
@@ -532,8 +671,23 @@ function render() {
   if (showResult) {
     nextWrap.classList.remove('hidden');
     nextLabel.textContent = currentQ < total - 1 ? 'Próxima Questão' : 'Ver Resultado Final';
+
+    const answeredWrong = selectedAnswer !== q.correct;
+    if (answeredWrong) {
+      feedbackBox.className = 'feedback-box feedback-error';
+      feedbackBox.innerHTML = `
+        <div class="feedback-title">Resposta correta e explicação</div>
+        <div class="feedback-answer"><strong>Resposta correta:</strong> ${q.options[q.correct]}</div>
+        <div class="feedback-explanation">${q.explanation}</div>`;
+      feedbackBox.classList.remove('hidden');
+    } else {
+      feedbackBox.classList.add('hidden');
+      feedbackBox.innerHTML = '';
+    }
   } else {
     nextWrap.classList.add('hidden');
+    feedbackBox.classList.add('hidden');
+    feedbackBox.innerHTML = '';
   }
 }
 
@@ -584,6 +738,8 @@ function renderResult() {
   });
 
   const breakdown = document.getElementById('topics-breakdown');
+  const wrongReviewWrap = document.getElementById('wrong-review-wrap');
+  const wrongReviewList = document.getElementById('wrong-review-list');
   breakdown.innerHTML = '';
   Object.entries(stats).forEach(([topic, s]) => {
     const barPct = ((s.correct / s.total) * 100).toFixed(0);
@@ -596,6 +752,24 @@ function renderResult() {
         <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
       </div>`;
   });
+
+  const wrongAnswers = answered.filter(item => !item.isCorrect);
+  wrongReviewList.innerHTML = '';
+  if (wrongAnswers.length) {
+    wrongReviewWrap.classList.remove('hidden');
+    wrongAnswers.forEach((item, idx) => {
+      const q = questions[item.question];
+      wrongReviewList.innerHTML += `
+        <div class="review-item">
+          <div class="review-meta">Erro ${idx + 1} • ${q.topic}</div>
+          <h3>${q.question}</h3>
+          <div class="review-answer"><strong>Resposta correta:</strong> ${q.options[q.correct]}</div>
+          <div class="review-explanation">${q.explanation}</div>
+        </div>`;
+    });
+  } else {
+    wrongReviewWrap.classList.add('hidden');
+  }
 }
 
 resetBtn.addEventListener('click', () => {
@@ -608,5 +782,6 @@ resetBtn.addEventListener('click', () => {
 // Init
 render();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
