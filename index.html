@@ -1,787 +1,95 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quiz ARC – Atendimento e Relacionamento com Clientes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --blue:    #2563eb;
-      --blue-dk: #1d4ed8;
-      --blue-lt: #eff6ff;
-      --green:   #16a34a;
-      --green-lt:#f0fdf4;
-      --red:     #dc2626;
-      --red-lt:  #fef2f2;
-      --gray-50: #f9fafb;
-      --gray-100:#f3f4f6;
-      --gray-200:#e5e7eb;
-      --gray-300:#d1d5db;
-      --gray-500:#6b7280;
-      --gray-700:#374151;
-      --gray-800:#1f2937;
-      --radius:  12px;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f0f4ff;
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-
-    #app { width: 100%; max-width: 780px; }
-
-    /* ── HEADER ─────────────────────────── */
-    .header {
-      margin-bottom: 1.5rem;
-    }
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .header h1 {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--gray-800);
-      line-height: 1.25;
-    }
-    .counter {
-      text-align: right;
-      flex-shrink: 0;
-    }
-    .counter small { font-size: .75rem; color: var(--gray-500); display: block; }
-    .counter strong { font-size: 1.6rem; font-weight: 700; color: var(--blue); font-family:'Sora',sans-serif; }
-
-    /* ── PROGRESS ───────────────────────── */
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: var(--gray-200);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-bottom: .5rem;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--blue);
-      border-radius: 99px;
-      transition: width .4s ease;
-    }
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: .8rem;
-      color: var(--gray-500);
-    }
-    .topic-badge {
-      font-weight: 600;
-      color: var(--blue);
-    }
-
-    /* ── CARD ───────────────────────────── */
-    .card {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: 0 2px 16px rgba(0,0,0,.07);
-      margin-bottom: 1.25rem;
-    }
-    .question-text {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--gray-800);
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-
-    /* ── OPTIONS ────────────────────────── */
-    .options { display: flex; flex-direction: column; gap: .75rem; }
-
-    .option-btn {
-      width: 100%;
-      text-align: left;
-      padding: .9rem 1.1rem;
-      border-radius: 10px;
-      border: 2px solid var(--gray-200);
-      background: #fff;
-      cursor: pointer;
-      font-size: .95rem;
-      font-weight: 500;
-      color: var(--gray-800);
-      transition: border-color .18s, background .18s, transform .12s;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .75rem;
-    }
-    .option-btn:hover:not(:disabled) {
-      border-color: var(--blue);
-      background: var(--blue-lt);
-      transform: translateX(3px);
-    }
-    .option-btn:disabled { cursor: default; }
-
-    .option-btn.correct {
-      background: var(--green-lt);
-      border-color: var(--green);
-      color: #14532d;
-    }
-    .option-btn.wrong {
-      background: var(--red-lt);
-      border-color: var(--red);
-      color: #7f1d1d;
-    }
-    .option-btn.dimmed {
-      background: var(--gray-100);
-      border-color: var(--gray-200);
-      color: var(--gray-500);
-    }
-
-    .icon { width: 24px; height: 24px; flex-shrink: 0; }
-
-    /* ── NEXT BTN ───────────────────────── */
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      background: var(--blue);
-      color: #fff;
-      font-family: 'Sora', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: .85rem 2rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background .2s, transform .15s;
-    }
-    .btn-primary:hover { background: var(--blue-dk); transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-
-    .next-wrap { display: flex; justify-content: center; }
-
-    /* ── RESULT SCREEN ──────────────────── */
-    .result-screen { background: #fff; border-radius: var(--radius); padding: 2.5rem 2rem; box-shadow: 0 2px 16px rgba(0,0,0,.07); }
-    .result-header { text-align: center; margin-bottom: 2rem; }
-    .award-icon { display: flex; justify-content: center; margin-bottom: 1rem; color: var(--blue); }
-    .result-header h1 { font-family:'Sora',sans-serif; font-size: 2rem; font-weight: 800; color: var(--gray-800); margin-bottom: .35rem; }
-    .result-header p  { color: var(--gray-500); font-size: 1rem; }
-
-    .score-box { text-align: center; margin-bottom: 1.5rem; }
-    .score-big { font-family:'Sora',sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--blue); line-height:1; }
-    .score-pct { font-size: 1.3rem; color: var(--gray-700); margin-top:.25rem; }
-    .perf-msg  { font-family:'Sora',sans-serif; font-size: 1.1rem; font-weight: 700; margin-top: 1rem; }
-    .perf-green { color: var(--green); }
-    .perf-blue  { color: var(--blue); }
-    .perf-yellow{ color: #b45309; }
-    .perf-red   { color: var(--red); }
-
-    .topics-title { font-family:'Sora',sans-serif; font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: 1rem; }
-    .topic-row { margin-bottom: .85rem; }
-    .topic-row-meta { display: flex; justify-content: space-between; font-size: .85rem; margin-bottom: .3rem; }
-    .topic-name  { font-weight: 600; color: var(--gray-700); }
-    .topic-stats { color: var(--gray-500); }
-    .bar-track { height: 8px; background: var(--gray-200); border-radius: 99px; overflow:hidden; }
-    .bar-fill  { height: 100%; background: var(--blue); border-radius: 99px; transition: width .6s ease; }
-
-    .result-footer { display: flex; justify-content: center; margin-top: 2rem; }
-
-
-
-    .feedback-box {
-      margin-top: 1.25rem;
-      border-radius: 12px;
-      padding: 1rem 1.1rem;
-      border: 1px solid var(--gray-200);
-      background: var(--gray-50);
-    }
-    .feedback-box.feedback-error {
-      background: #fff7ed;
-      border-color: #fdba74;
-    }
-    .feedback-title {
-      font-family: 'Sora', sans-serif;
-      font-size: .95rem;
-      font-weight: 700;
-      color: var(--gray-800);
-      margin-bottom: .45rem;
-    }
-    .feedback-answer {
-      font-size: .92rem;
-      color: var(--gray-700);
-      margin-bottom: .45rem;
-    }
-    .feedback-answer strong { color: var(--green); }
-    .feedback-explanation {
-      font-size: .92rem;
-      color: var(--gray-700);
-      line-height: 1.6;
-    }
-    .review-wrap {
-      margin-top: 2rem;
-      border-top: 1px solid var(--gray-200);
-      padding-top: 1.5rem;
-    }
-    .review-item {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-200);
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: .9rem;
-    }
-    .review-item h3 {
-      font-family:'Sora',sans-serif;
-      font-size: .98rem;
-      color: var(--gray-800);
-      margin-bottom: .5rem;
-      line-height: 1.45;
-    }
-    .review-meta {
-      font-size: .88rem;
-      color: var(--gray-500);
-      margin-bottom: .45rem;
-    }
-    .review-answer {
-      color: var(--gray-700);
-      font-size: .92rem;
-      margin-bottom: .4rem;
-      line-height: 1.5;
-    }
-    .review-answer strong { color: var(--green); }
-    .review-explanation {
-      color: var(--gray-700);
-      font-size: .92rem;
-      line-height: 1.6;
-    }
-
-    /* hidden by default */
-    .hidden { display: none !important; }
-
-    @media (max-width: 480px) {
-      .header h1 { font-size: 1.1rem; }
-      .card { padding: 1.25rem; }
-      .question-text { font-size: 1rem; }
-      .option-btn { font-size: .88rem; }
-    }
-  </style>
-</head>
-<body>
-<div id="app">
-
-  <!-- ── QUIZ VIEW ───────────────────── -->
-  <div id="quiz-view">
-    <div class="header">
-      <div class="header-top">
-        <h1>Quiz ARC – Atendimento e Relacionamento com Clientes</h1>
-        <div class="counter">
-          <small>Questão</small>
-          <strong id="q-counter"></strong>
-        </div>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-      <div class="progress-meta">
-        <span class="topic-badge" id="topic-label"></span>
-        <span id="score-label"></span>
-      </div>
-    </div>
-
-    <div class="card">
-      <p class="question-text" id="question-text"></p>
-      <div class="options" id="options"></div>
-      <div id="feedback-box" class="feedback-box hidden"></div>
-    </div>
-
-    <div class="next-wrap hidden" id="next-wrap">
-      <button class="btn-primary" id="next-btn">
-        <span id="next-label">Próxima Questão</span>
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- ── RESULT VIEW ─────────────────── -->
-  <div id="result-view" class="hidden">
-    <div class="result-screen">
-      <div class="result-header">
-        <div class="award-icon">
-          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="8" r="6"/>
-            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
-          </svg>
-        </div>
-        <h1>Quiz Concluído!</h1>
-        <p>Confira seu desempenho</p>
-      </div>
-
-      <div class="score-box">
-        <div class="score-big" id="score-big"></div>
-        <div class="score-pct" id="score-pct"></div>
-        <div class="perf-msg" id="perf-msg"></div>
-      </div>
-
-      <p class="topics-title">Distribuição por Tópico:</p>
-      <div id="topics-breakdown"></div>
-
-      <div id="wrong-review-wrap" class="review-wrap hidden">
-        <p class="topics-title">Revisão das questões erradas</p>
-        <div id="wrong-review-list"></div>
-      </div>
-
-      <div class="result-footer">
-        <button class="btn-primary" id="reset-btn">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-            <path d="M3 3v5h5"/>
-          </svg>
-          Refazer Quiz
-        </button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quiz — Comunicação, Mídia e Vendas</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1d2433;--mut:#5d6679;--pri:#3b5bdb;--ok:#2b8a3e;--okb:#ebfbee;--no:#c92a2a;--nob:#fff0f0;--bd:#dde2ee;--hl:#fff8db}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.w{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px;margin-bottom:16px}
+h1{font-size:1.5rem;margin:.3em 0}h2{font-size:1.1rem;margin:1em 0 .5em}
+.mut{color:var(--mut)}.row{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:#fff;border-radius:10px;padding:10px 14px;color:var(--ink)}
+button.on,.go{background:var(--pri);color:#fff;border-color:var(--pri)}.go{font-weight:600}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.no{background:var(--nob);border-color:var(--no)}
+.bar{height:8px;background:var(--bd);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.tag{font-size:.75rem;padding:2px 10px;border-radius:99px;background:#e7ecff;color:var(--pri);font-weight:600}
+.fb{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--hl);border-left:4px solid #f0b400}
+.big{font-size:2.6rem;font-weight:700}hr{border:0;border-top:1px solid var(--bd);margin:14px 0}
+</style></head><body><div class="w" id="app"></div>
 <script>
-const questions = [
-  {
-    question: "Segundo Sheth, quais são os três componentes de atitudes que influenciam o comportamento do cliente?",
-    options: ["Racional, emocional e prático", "Cognitivo, afetivo e conativo", "Declarado, real e secreto", "Técnico, comercial e operacional"],
-    correct: 1,
-    explanation: "Segundo o material, Sheth divide as atitudes em três componentes: cognitivo (pensamento), afetivo (sentimento) e conativo (ação). Eles ajudam a explicar como o cliente pensa, sente e age diante de uma compra.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "A equipe de antropólogos da Whirlpool (Brastemp) visitou residências para observar o uso de lavadoras e secadoras. Qual foi a principal descoberta que levou ao desenvolvimento de botões coloridos e ilustrados?",
-    options: ["As donas de casa preferiam máquinas mais coloridas", "Muitas donas de casa eram ocupadas e outras pessoas (homens e crianças) também operavam as máquinas", "Os botões anteriores quebravam com facilidade", "As máquinas precisavam ser mais tecnológicas"],
-    correct: 1,
-    explanation: "A observação mostrou que muitas donas de casa eram muito ocupadas e que homens e crianças também usavam as máquinas. Por isso os engenheiros criaram botões mais visuais e intuitivos.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Segundo Juran (1992), qual é a diferença fundamental entre o que os clientes declaram e o que realmente necessitam?",
-    options: ["Clientes declaram necessidades em termos de bens, mas suas necessidades reais são pelos serviços que aqueles bens podem prestar", "Clientes sempre sabem exatamente o que precisam", "Não há diferença significativa entre necessidade declarada e real", "Clientes nunca conseguem expressar suas necessidades verdadeiras"],
-    correct: 0,
-    explanation: "Juran explica que o cliente costuma declarar a necessidade em termos do bem que quer comprar, mas a necessidade real está no benefício ou serviço que esse bem presta.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Quantos tipos de necessidades do cliente são apresentados na classificação que inclui 'necessidade declarada', 'necessidade real', etc.?",
-    options: ["3 tipos", "4 tipos", "5 tipos", "6 tipos"],
-    correct: 2,
-    explanation: "O material apresenta cinco tipos: necessidade declarada, necessidade real, necessidade não declarada, necessidade de “algo mais” e necessidade secreta.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Segundo Michael Porter, como é determinada a vantagem competitiva?",
-    options: ["Pelo menor preço do mercado", "Pelo valor que a empresa consegue criar para seus clientes e que ultrapassa os custos de produção", "Pela maior quantidade de produtos vendidos", "Pela tecnologia mais avançada utilizada"],
-    correct: 1,
-    explanation: "Para Porter, a vantagem competitiva vem do valor que a empresa cria para o cliente acima do custo de produzir esse valor. Não é só vender mais ou cobrar menos.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Qual é a fórmula apresentada para o 'Valor para o cliente'?",
-    options: ["Preço - Custo de produção", "Qualidade × Quantidade", "O que o cliente obteve / O que custou para o cliente", "Benefícios + Características - Preço"],
-    correct: 2,
-    explanation: "A fórmula do material é: valor para o cliente = o que o cliente obteve ÷ o que custou para o cliente. Ou seja, o cliente compara benefícios percebidos com o custo total.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "O que representa um 'valor superior' para o cliente, segundo o material?",
-    options: ["Sempre o produto mais barato disponível", "Produto com características idênticas à concorrência por preço mais baixo OU produto com benefícios superiores que compensam um preço mais elevado", "Apenas produtos premium com preços elevados", "Produtos que seguem tendências de mercado"],
-    correct: 1,
-    explanation: "Valor superior surge quando a empresa oferece algo equivalente por preço menor ou entrega benefícios melhores que compensam um preço maior.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Jack Welch, CEO da General Eletrics, ao ser questionado por um funcionário sobre como garantir o emprego, respondeu:",
-    options: ["Trabalhe mais horas", "Seja mais produtivo", "Quem pode garantir-lhe o emprego são os nossos clientes", "Depende do seu desempenho individual"],
-    correct: 2,
-    explanation: "A ideia central da resposta de Jack Welch é que quem sustenta a empresa são os clientes. Se eles estão satisfeitos e continuam comprando, o negócio prospera.",
-    topic: "Instrumentos para ouvir o cliente"
-  },
-  {
-    question: "Segundo Hamel e Prahalad (1995), em vez de perguntar ao cliente o produto/serviço que ele deseja, o que deve ser feito?",
-    options: ["Oferecer o produto mais barato", "Investigar quais suas necessidades não atendidas (no todo ou em parte)", "Copiar o que a concorrência está fazendo", "Desenvolver produtos baseados apenas em tecnologia"],
-    correct: 1,
-    explanation: "Hamel e Prahalad defendem que a empresa deve investigar necessidades ainda não atendidas, e não apenas reagir ao que o cliente já consegue verbalizar.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Quantos tipos de empresas são descritos por Hamel e Prahalad em relação ao tratamento com clientes?",
-    options: ["2 tipos", "3 tipos", "4 tipos", "5 tipos"],
-    correct: 1,
-    explanation: "O material cita três tipos: as que tentam levar os clientes para onde eles não querem ir, as que respondem às necessidades articuladas e as que criam o futuro.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Qual tipo de empresa Hamel e Prahalad consideram como 'empresas que criam o futuro'?",
-    options: ["As que tentam levar os clientes para onde eles não querem ir", "As que escutam os clientes e respondem às suas necessidades articuladas", "As que levam os clientes para onde eles querem ir, mas ainda não sabem disso", "As que copiam a concorrência"],
-    correct: 2,
-    explanation: "São as empresas que levam os clientes para onde eles querem ir, mas ainda não sabem disso. Elas antecipam necessidades e constroem o futuro do mercado.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "O que é valor subjetivo segundo o material apresentado?",
-    options: ["O custo de produção do produto", "O valor de um bem ou serviço determinado pela importância que um indivíduo atribui a ele para satisfazer suas necessidades e desejos", "O preço de mercado estabelecido pela concorrência", "O lucro da empresa"],
-    correct: 1,
-    explanation: "Valor subjetivo é o valor percebido na mente de quem deseja adquirir algo. Portanto, depende da importância que cada pessoa atribui ao bem ou serviço para satisfazer seus desejos e necessidades.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Charles Revson, da Revlon, exemplificou o valor subjetivo dizendo: 'Quando ele sai da fábrica é batom, mas quando passa por cima do balcão da loja de departamentos, é ______.'",
-    options: ["Beleza", "Luxo", "Esperança", "Glamour"],
-    correct: 2,
-    explanation: "A frase mostra que o produto físico pode ter um significado simbólico para o cliente. No caso do batom, Revson dizia que, para a cliente, ele vende “esperança”.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Quem criou o conceito de 'Miopia de Marketing' em 1960?",
-    options: ["Philip Kotler", "Michael Porter", "Theodore Levitt", "Peter Drucker"],
-    correct: 2,
-    explanation: "O conceito de Miopia de Marketing foi criado por Theodore Levitt em 1960 para alertar empresas que enxergam só o produto e ignoram a necessidade atendida.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Segundo o conceito de Miopia de Marketing, qual é o erro fatal que empresas cometem?",
-    options: ["Cobrar preços muito altos", "Focar demais no produto (preço e características) e esquecer as necessidades do cliente (valor)", "Investir pouco em marketing", "Contratar funcionários inadequados"],
-    correct: 1,
-    explanation: "O erro fatal é concentrar-se demais em preço e características do produto e esquecer o valor percebido e as necessidades reais do cliente.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "No exemplo clássico de Miopia de Marketing, por que as ferrovias perderam mercado para carros e aviões?",
-    options: ["Porque os trens ficaram muito caros", "Porque achavam que estavam no 'negócio de trens' quando na verdade estavam no 'negócio de transportes'", "Porque não investiram em tecnologia", "Porque os funcionários não eram qualificados"],
-    correct: 1,
-    explanation: "Porque se viam no negócio de trens, e não no negócio de transportes. Essa visão limitada impediu que percebessem novas formas de atender à mesma necessidade do cliente.",
-    topic: "Riscos ao ouvir clientes"
-  },
-  {
-    question: "Segundo o material, é verdade que todos os clientes interessam para um negócio?",
-    options: ["Sim, todos os clientes são importantes", "Não, alguns clientes podem ser tão danosos que mantê-los representa mais problemas do que deixá-los partir", "Sim, mas apenas em grandes empresas", "Depende apenas do setor de atuação"],
-    correct: 1,
-    explanation: "Não. O material diz que alguns clientes podem ser tão danosos e pouco rentáveis que mantê-los gera mais problemas do que deixá-los partir.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "Quais são as três perguntas fundamentais que uma empresa deve saber responder para avaliar se um cliente é estratégico?",
-    options: ["Quem é? Onde mora? Quanto compra?", "O que está oferecendo? Quão diferente é isso da concorrência? Quanto ganha?", "É fiel? É rentável? É influente?", "Compra muito? Paga em dia? Reclama pouco?"],
-    correct: 1,
-    explanation: "O texto apresenta três perguntas: o que está oferecendo, quão diferente isso é em relação à concorrência e quanto ganha com isso. Elas ajudam a avaliar valor, diferenciação e rentabilidade.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "Para selecionar adequadamente clientes, o que é necessário segundo o material?",
-    options: ["Apenas intuição do gestor", "Estar respaldado por estatísticas históricas que mostram a evolução do cliente", "Seguir o que a concorrência faz", "Aceitar todos os clientes igualmente"],
-    correct: 1,
-    explanation: "A seleção não deve ser feita no improviso. O material destaca a necessidade de respaldo em dados e estatísticas históricas para acompanhar a evolução e a rentabilidade do cliente.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "A seleção de clientes é uma medida estratégica porque:",
-    options: ["Reduz custos operacionais imediatamente", "Considera a viabilidade de curto, médio e longo prazos de cada cliente e o tipo de clientes que os concorrentes possuem", "Permite demitir funcionários", "Aumenta o preço dos produtos"],
-    correct: 1,
-    explanation: "Ela considera a viabilidade de curto, médio e longo prazo de cada cliente e também o perfil dos clientes atendidos pelos concorrentes antes de decidir onde investir esforços.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "O que significa a sigla NPS?",
-    options: ["New Product System", "Net Promoter Score", "National Performance Standard", "Network Processing Service"],
-    correct: 1,
-    explanation: "NPS significa Net Promoter Score, uma métrica muito usada para medir o potencial de recomendação e a percepção do cliente sobre a empresa ou produto.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "Qual é a pergunta central do NPS (Net Promoter Score)?",
-    options: ["Você está satisfeito com nosso produto?", "O quanto você nos recomendaria a empresa/produto para um amigo ou parente? (escala 0-10)", "Você voltaria a comprar conosco?", "Qual nota você dá para nosso atendimento?"],
-    correct: 1,
-    explanation: "A pergunta clássica do NPS mede recomendação em escala de 0 a 10: o quanto o cliente indicaria a empresa ou o produto para um amigo ou parente.",
-    topic: "Seleção de clientes"
-  },
-  {
-    question: "O que significa a sigla CRM?",
-    options: ["Customer Relations Manager", "Corporate Risk Management", "Customer Relationship Management", "Client Revenue Monitoring"],
-    correct: 2,
-    explanation: "CRM significa Customer Relationship Management, em português Gestão de Relacionamento com o Cliente.",
-    topic: "CRM"
-  },
-  {
-    question: "Segundo Peppers e Rogers (2001), o que envolve CRM do ponto de vista tecnológico?",
-    options: ["Apenas capturar dados dos clientes", "Capturar dados, consolidar em banco central, analisar, distribuir resultados e usar ao interagir com cliente", "Somente armazenar informações de vendas", "Criar campanhas de marketing"],
-    correct: 1,
-    explanation: "No aspecto tecnológico, CRM envolve captar dados, centralizá-los em um banco, analisá-los, distribuir os resultados e usar essas informações nos contatos com o cliente.",
-    topic: "CRM"
-  },
-  {
-    question: "Qual é a principal diferença do CRM em relação aos sistemas tradicionais?",
-    options: ["CRM é mais caro", "CRM tem total preocupação com o cliente, que passa a ser o centro do modelo de dados", "CRM é mais rápido", "CRM usa tecnologia mais avançada"],
-    correct: 1,
-    explanation: "A diferença principal é que, no CRM, o cliente vira o centro do modelo de dados e das decisões, enquanto os sistemas tradicionais costumam ser mais centrados em processos internos.",
-    topic: "CRM"
-  },
-  {
-    question: "Qual é o principal objetivo do CRM?",
-    options: ["Reduzir custos operacionais", "Ajudar a empresa a organizar o processo de gestão de vendas e criar a melhor experiência do cliente", "Automatizar processos internos", "Substituir funcionários por sistemas"],
-    correct: 1,
-    explanation: "O CRM busca organizar a gestão de vendas e relacionamento para oferecer uma experiência melhor ao cliente, com mais conhecimento e personalização.",
-    topic: "CRM"
-  },
-  {
-    question: "O CRM permite conhecer leads e clientes em um nível mais aprofundado. O que ele ajuda a entender?",
-    options: ["Apenas dados demográficos", "Detalhes sobre comportamentos, tendências e necessidades", "Somente histórico de compras", "Apenas informações de contato"],
-    correct: 1,
-    explanation: "Com CRM, a empresa compreende melhor comportamentos, tendências e necessidades, e não apenas dados cadastrais ou compras isoladas.",
-    topic: "CRM"
-  },
-  {
-    question: "Quais tipos de informações um CRM software capta ao entrar em contato com um cliente?",
-    options: ["Apenas nome e telefone", "Nome, telefone, endereço, e-mail, ações no site, produtos/serviços comprados, etc.", "Somente histórico de compras", "Apenas dados financeiros"],
-    correct: 1,
-    explanation: "Um CRM registra dados de contato, interações, comportamento no site, histórico de compras e outras informações úteis para o relacionamento e a tomada de decisão.",
-    topic: "CRM"
-  },
-  {
-    question: "Qual das seguintes NÃO é uma ferramenta/componente típico de CRM mencionado no material?",
-    options: ["Call Center", "Help Desk", "Automação de vendas", "Gestão de estoque"],
-    correct: 3,
-    explanation: "Call center, help desk e automação de vendas aparecem como componentes ligados ao CRM. Gestão de estoque pertence a outra frente de administração.",
-    topic: "CRM"
-  },
-  {
-    question: "Quantas características/habilidades principais devem ter os atendentes que interagem com clientes, segundo o material?",
-    options: ["3 características", "4 características", "5 características", "6 características"],
-    correct: 2,
-    explanation: "O material lista cinco competências principais: autossuficiência técnica, habilidade de comunicação, cortesia e empatia, capacidade de gerenciar crises e autonomia para resolver problemas.",
-    topic: "Perfil do atendente"
-  },
-  {
-    question: "O que significa 'autossuficiência técnica' no perfil do atendente?",
-    options: ["Saber consertar equipamentos", "Conhecer a empresa, o que ela faz e o que fazem suas várias áreas/setores para entender e encaminhar solicitações", "Ter diploma técnico", "Saber programar computadores"],
-    correct: 1,
-    explanation: "Significa conhecer a empresa, seus setores e seus processos para entender, solucionar ou encaminhar adequadamente o que o cliente solicita.",
-    topic: "Perfil do atendente"
-  },
-  {
-    question: "O que é empatia no contexto do atendimento ao cliente?",
-    options: ["Ser simpático com todos", "Capacidade de colocar-se no lugar do cliente e sentir como ele", "Concordar com tudo que o cliente diz", "Oferecer descontos"],
-    correct: 1,
-    explanation: "Empatia é a capacidade de se colocar no lugar do cliente e compreender como ele se sente diante da situação apresentada.",
-    topic: "Perfil do atendente"
-  },
-  {
-    question: "Para que se possa dar autonomia a um atendente resolver problemas, o que é necessário?",
-    options: ["Apenas boa vontade", "Autossuficiência técnica e acesso às informações necessárias", "Muitos anos de experiência", "Apenas autorização da diretoria"],
-    correct: 1,
-    explanation: "A autonomia só funciona quando o atendente tem conhecimento técnico e acesso às informações necessárias para decidir com segurança.",
-    topic: "Perfil do atendente"
-  },
-  {
-    question: "Segundo Kotler (2000), qual é a fórmula da satisfação do cliente?",
-    options: ["Satisfação = Qualidade - Preço", "Satisfação = Desempenho versus Expectativas", "Satisfação = Produto + Serviço", "Satisfação = Benefícios - Custos"],
-    correct: 1,
-    explanation: "Para Kotler, satisfação depende da comparação entre o desempenho percebido e as expectativas do cliente. Se o desempenho atende ou supera a expectativa, a satisfação aumenta.",
-    topic: "Satisfação dos clientes"
-  },
-  {
-    question: "Quais são os métodos sugeridos por Philip Kotler para acompanhar e medir a satisfação dos clientes?",
-    options: ["Apenas pesquisas online", "Sistemas de Reclamações/Sugestões, Pesquisas de Satisfação, Compras Simuladas, Análise de Clientes Perdidos", "Somente análise de vendas", "Apenas feedback em redes sociais"],
-    correct: 1,
-    explanation: "Kotler cita quatro métodos principais: sistemas de reclamações e sugestões, pesquisas de satisfação, compras simuladas e análise de clientes perdidos.",
-    topic: "Satisfação dos clientes"
-  }
-];
-
-// ── STATE ────────────────────────────────────────────────
-let currentQ = 0;
-let selectedAnswer = null;
-let showResult = false;
-let score = 0;
-let answered = [];
-
-// ── ELEMENTS ─────────────────────────────────────────────
-const quizView   = document.getElementById('quiz-view');
-const resultView = document.getElementById('result-view');
-const qCounter   = document.getElementById('q-counter');
-const progressFill = document.getElementById('progress-fill');
-const topicLabel = document.getElementById('topic-label');
-const scoreLabel = document.getElementById('score-label');
-const questionText = document.getElementById('question-text');
-const optionsEl  = document.getElementById('options');
-const feedbackBox = document.getElementById('feedback-box');
-const nextWrap   = document.getElementById('next-wrap');
-const nextBtn    = document.getElementById('next-btn');
-const nextLabel  = document.getElementById('next-label');
-const resetBtn   = document.getElementById('reset-btn');
-
-// SVGs
-const svgCheck = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-const svgX     = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
-
-// ── RENDER QUIZ ──────────────────────────────────────────
-function render() {
-  const q = questions[currentQ];
-  const total = questions.length;
-  const pct = ((currentQ + 1) / total) * 100;
-
-  qCounter.textContent   = `${currentQ + 1}/${total}`;
-  progressFill.style.width = `${pct}%`;
-  topicLabel.textContent  = q.topic;
-  scoreLabel.textContent  = `Pontuação: ${score}/${currentQ}`;
-  questionText.textContent = q.question;
-
-  optionsEl.innerHTML = '';
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.disabled  = showResult;
-
-    const isCorrect  = i === q.correct;
-    const isSelected = i === selectedAnswer;
-
-    if (showResult) {
-      if (isCorrect)               btn.classList.add('correct');
-      else if (isSelected)         btn.classList.add('wrong');
-      else                         btn.classList.add('dimmed');
-    }
-
-    const iconHTML = showResult
-      ? (isCorrect ? svgCheck : (isSelected ? svgX : ''))
-      : '';
-
-    btn.innerHTML = `<span>${opt}</span>${iconHTML}`;
-    btn.addEventListener('click', () => handleAnswer(i));
-    optionsEl.appendChild(btn);
-  });
-
-  if (showResult) {
-    nextWrap.classList.remove('hidden');
-    nextLabel.textContent = currentQ < total - 1 ? 'Próxima Questão' : 'Ver Resultado Final';
-
-    const answeredWrong = selectedAnswer !== q.correct;
-    if (answeredWrong) {
-      feedbackBox.className = 'feedback-box feedback-error';
-      feedbackBox.innerHTML = `
-        <div class="feedback-title">Resposta correta e explicação</div>
-        <div class="feedback-answer"><strong>Resposta correta:</strong> ${q.options[q.correct]}</div>
-        <div class="feedback-explanation">${q.explanation}</div>`;
-      feedbackBox.classList.remove('hidden');
-    } else {
-      feedbackBox.classList.add('hidden');
-      feedbackBox.innerHTML = '';
-    }
-  } else {
-    nextWrap.classList.add('hidden');
-    feedbackBox.classList.add('hidden');
-    feedbackBox.innerHTML = '';
-  }
-}
-
-function handleAnswer(i) {
-  if (showResult) return;
-  selectedAnswer = i;
-  showResult = true;
-  const isCorrect = i === questions[currentQ].correct;
-  if (isCorrect) score++;
-  answered.push({ question: currentQ, selected: i, correct: questions[currentQ].correct, isCorrect });
-  render();
-}
-
-nextBtn.addEventListener('click', () => {
-  if (currentQ < questions.length - 1) {
-    currentQ++;
-    selectedAnswer = null;
-    showResult = false;
-    render();
-  } else {
-    renderResult();
-  }
-});
-
-// ── RENDER RESULT ────────────────────────────────────────
-function renderResult() {
-  quizView.classList.add('hidden');
-  resultView.classList.remove('hidden');
-
-  const pct = ((score / questions.length) * 100).toFixed(1);
-  document.getElementById('score-big').textContent = `${score}/${questions.length}`;
-  document.getElementById('score-pct').textContent = `Pontuação: ${pct}%`;
-
-  const perfEl = document.getElementById('perf-msg');
-  const p = parseFloat(pct);
-  if (p >= 90) { perfEl.textContent = 'Excelente! Você domina o conteúdo!'; perfEl.className = 'perf-msg perf-green'; }
-  else if (p >= 70) { perfEl.textContent = 'Muito bom! Bom conhecimento da matéria.'; perfEl.className = 'perf-msg perf-blue'; }
-  else if (p >= 50) { perfEl.textContent = 'Razoável. Revise alguns conceitos.'; perfEl.className = 'perf-msg perf-yellow'; }
-  else { perfEl.textContent = 'É preciso estudar mais. Revise todo o conteúdo.'; perfEl.className = 'perf-msg perf-red'; }
-
-  // topics breakdown
-  const stats = {};
-  questions.forEach((q, idx) => {
-    if (!stats[q.topic]) stats[q.topic] = { total: 0, correct: 0 };
-    stats[q.topic].total++;
-    const a = answered.find(x => x.question === idx);
-    if (a && a.isCorrect) stats[q.topic].correct++;
-  });
-
-  const breakdown = document.getElementById('topics-breakdown');
-  const wrongReviewWrap = document.getElementById('wrong-review-wrap');
-  const wrongReviewList = document.getElementById('wrong-review-list');
-  breakdown.innerHTML = '';
-  Object.entries(stats).forEach(([topic, s]) => {
-    const barPct = ((s.correct / s.total) * 100).toFixed(0);
-    breakdown.innerHTML += `
-      <div class="topic-row">
-        <div class="topic-row-meta">
-          <span class="topic-name">${topic}</span>
-          <span class="topic-stats">${s.correct}/${s.total} (${barPct}%)</span>
-        </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${barPct}%"></div></div>
-      </div>`;
-  });
-
-  const wrongAnswers = answered.filter(item => !item.isCorrect);
-  wrongReviewList.innerHTML = '';
-  if (wrongAnswers.length) {
-    wrongReviewWrap.classList.remove('hidden');
-    wrongAnswers.forEach((item, idx) => {
-      const q = questions[item.question];
-      wrongReviewList.innerHTML += `
-        <div class="review-item">
-          <div class="review-meta">Erro ${idx + 1} • ${q.topic}</div>
-          <h3>${q.question}</h3>
-          <div class="review-answer"><strong>Resposta correta:</strong> ${q.options[q.correct]}</div>
-          <div class="review-explanation">${q.explanation}</div>
-        </div>`;
-    });
-  } else {
-    wrongReviewWrap.classList.add('hidden');
-  }
-}
-
-resetBtn.addEventListener('click', () => {
-  currentQ = 0; selectedAnswer = null; showResult = false; score = 0; answered = [];
-  resultView.classList.add('hidden');
-  quizView.classList.remove('hidden');
-  render();
-});
-
-// Init
-render();
-</script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body>
-</html>
+const N={f:'Fácil',m:'Médio',d:'Difícil'};
+const Q=[
+["f","O que é um canal de mídia, segundo a Aula 6?","O caminho físico ou digital que leva a mensagem ao consumidor","O valor reservado para veicular os anúncios da campanha","O time de vendedores que visita os clientes da empresa","O público para o qual a mensagem da marca é criada","Canal é o caminho, físico ou digital, que leva a mensagem da empresa até o consumidor."],
+["f","Quais são as três variáveis estruturais de entrega de um canal (Kotler)?","Alcance, Frequência e Impacto","Alcance, Impacto e Conversão","Frequência, Custo e Prestígio","Impacto, CPM e Frequência","A eficácia do canal depende da relação entre Alcance (Reach), Frequência e Impacto."],
+["f","O Alcance mede o número de pessoas…","expostas ao anúncio pelo menos uma vez no período","expostas ao anúncio em média a cada semana","que clicaram no anúncio e chegaram ao site","que compraram depois de ver o anúncio","Alcance = pessoas (ou lares/contas únicas) expostas pelo menos uma vez em um período."],
+["f","O que o CPM indica?","Quanto custa para atingir 1.000 pessoas naquele canal","Quanto custa cada clique em um anúncio digital","Quantas vezes o lar médio viu a mensagem","Quanto custa fechar 1.000 vendas no varejo","CPM = Custo por Mil: o custo para atingir mil pessoas no canal."],
+["f","Na classificação de Kotler, quem são os Canais de Defensores (Advocacy)?","Vendedores da própria empresa que contatam os compradores","Amigos, vizinhos e familiares que indicam a marca","Especialistas independentes que fazem declarações","Clientes que deixam avaliações em sites públicos","Defensores = vendedores da própria empresa (ex.: consultores da Cacau Show na loja)."],
+["f","Um anúncio foi visto por 320.000 das 1.000.000 de pessoas das classes AB de Fortaleza. Qual o alcance?","32%","3,2%","320%","68%","320.000 ÷ 1.000.000 × 100 = 32%."],
+["f","O que é Gestão de Vendas, segundo a Aula 8?","Planejar, direcionar, controlar e liderar as atividades de venda","Escolher os canais de mídia mais baratos para a campanha","Persuadir o cliente no momento exato do fechamento","Recrutar e remunerar os vendedores da empresa","É o processo de planejar, direcionar, controlar e liderar as atividades de venda."],
+["f","Quais canais são ideais para o topo do funil (lançamento e consciência de marca)?","TV, mídia exterior (OOH) e grandes portais digitais","Links patrocinados e WhatsApp corporativo","Blogs, reviews e e-mail marketing","Venda consultiva direta com o vendedor","Topo do funil prioriza Alcance: TV, OOH e grandes portais."],
+["f","O que significa o termo Phygital?","Fusão entre o mundo físico e o digital","Fusão entre canais pessoais e não pessoais","Fusão entre vendas B2B e vendas B2C","Fusão entre mídia de massa e CRM","Phygital = físico + digital: experiência fluida e contínua."],
+["f","O que acontece na etapa de Pós-venda?","Gestão do relacionamento para fidelização e recompra","Esclarecimento de dúvidas e mitigação de resistências","Conversão e assinatura do contrato com o cliente","Pesquisa inicial e primeiro contato com o cliente","Pós-venda = relacionamento para fidelizar e gerar recompra."],
+["f","Qual é o perfil do mercado B2C?","Decisões ágeis, apelos emocionais e exigência de conveniência","Ciclos de decisão longos e vários tomadores de decisão","Motivadores essencialmente racionais e corporativos","Vendas estruturadas entre empresas parceiras","B2C = consumidor final, decisão rápida, forte emoção e conveniência (Las Casas)."],
+["f","Segundo a Aula 7, a escolha do canal deve se basear em…","critérios técnicos objetivos","o gosto pessoal do gestor","a mídia que os concorrentes usam","o canal com menor preço absoluto","A escolha nunca é pelo gosto do gestor, e sim por critérios técnicos objetivos."],
+["f","Qual característica define os Canais Não Pessoais (massa)?","Grande alcance e alto poder de construção de marca","Alta personalização e feedback imediato","Contato direto, cara a cara, com o comprador","Mensagem ajustada a cada cliente individual","Massa: grande alcance, menor customização e forte construção de marca."],
+["f","No funil integrado, quem atua no topo (atração)?","A Gestão de Mídia","A Comunicação Integrada","A Gestão de Vendas","O time de pós-venda","Topo = Mídia (atrair tráfego e gerar leads qualificados)."],
+["f","O que compõe o pilar Gestão de Pessoas (Liderança)?","Recrutamento, treinamento, motivação e compensação","Metas, previsão de vendas e canais de distribuição","Estrutura da equipe, territórios e rotinas","Prospecção, apresentação e fechamento das vendas","O pilar trata de quem executa a estratégia: recrutar, treinar, motivar e remunerar."],
+["f","Qual característica define os Canais Pessoais?","Alta personalização e feedback imediato","Grande alcance com baixa customização","Alto poder de construção de marca em massa","Mensagem única sem interação direta","Pessoais envolvem duas ou mais pessoas interagindo diretamente."],
+["m","Pessoas impactadas: 6 de 10. Elas viram o anúncio 2, 2, 1, 2, 2 e 3 vezes. Qual a frequência média?","2","1,2","6","12","Soma = 12; 12 ÷ 6 pessoas impactadas = 2."],
+["m","Um anúncio de rádio vai ao ar 7 vezes e é ouvido, a cada vez, por 200 mil pessoas. Quantos impactos?","1.400.000","207.000","200.000","14.000.000","7 × 200 mil = 1.400.000 impactos."],
+["m","A Veja tem cerca de 2.000.000 de leitores e a página custa R$ 150.000. Qual o CPM?","R$ 75,00","R$ 7,50","R$ 300,00","R$ 0,75","150.000 × 1.000 ÷ 2.000.000 = R$ 75,00."],
+["m","Entre as revistas do exercício, qual é a mais rentável (menor CPM)?","Claudia, com CPM de R$ 81,81","Caras, com CPM de R$ 83,96","Nova, com CPM de R$ 98,60","Marie Claire, com CPM de R$ 109,89","Claudia é a mais barata para atingir 1.000 pessoas; Marie Claire é a mais cara."],
+["m","No exercício de Instagram, qual formato entrega o menor custo por mil impressões?","Reels, com CPM de R$ 8,00","Stories, com CPM de R$ 8,06","Carrossel, com CPM de R$ 8,94","Empate entre Reels e Stories","Reels (8,00) < Stories (8,06) < Carrossel (8,94): Reels é o mais rentável."],
+["m","De 10 pessoas, 6 viram o anúncio (algumas mais de uma vez). Qual o alcance?","60%","12%","120%","40%","Alcance conta quem viu pelo menos 1 vez: 6 ÷ 10 × 100 = 60%, sem somar repetições."],
+["m","Quando a Frequência é indicada?","Quando há forte resistência do consumidor ou história complexa","Quando se lança um produto em um mercado amplo","Quando o objetivo é resposta direta e imediata","Quando a verba é limitada e o público é local","Frequência serve para resistência ou histórias complexas; Alcance serve para lançamentos."],
+["m","Um anúncio de moda rende mais na Vogue do que na Fortune. Qual variável explica isso?","Impacto","Alcance","Frequência","CPM","Impacto é o valor qualitativo de uma exposição por meio de um veículo."],
+["m","Qual exemplo representa um Canal de Especialistas?","Médico influenciador recomendando um protetor solar no Instagram","Grupo de amigos indicando um restaurante no WhatsApp","Consultor da Oracle apresentando o software à diretoria","Cliente avaliando a loja no Google Avaliações","Especialistas são independentes e fazem declarações aos compradores-alvo."],
+["m","O que são as Atmosferas, entre os canais não pessoais?","Ambientes projetados para reforçar a inclinação de compra","Ocorrências planejadas, como feiras e patrocínios","Veículos de exibição, como outdoors e cartazes","Contatos diretos por telefone, e-mail ou chat","Atmosferas: design de lojas físicas e interfaces de e-commerce, por exemplo."],
+["m","Como agem as empresas com verbas limitadas, segundo a Aula 7?","Abrem mão do alcance total e focam em hipersegmentação ou mídias locais","Combinam mídia de massa off-line com digital de alta frequência","Priorizam TV aberta para garantir o maior alcance possível","Concentram a verba em eventos e grandes patrocínios","Verba limitada obriga a hipersegmentação digital ou mídias locais; verba robusta permite o efeito multiplicador."],
+["m","Quais canais são ideais para a base do funil (resposta direta e vendas)?","Mídia de performance (CPC), links patrocinados e WhatsApp corporativo","TV, mídia exterior e grandes portais digitais","Influenciadores técnicos, reviews e blogs","Eventos, patrocínios e feiras de lançamento","Base do funil exige canais de alta conversão."],
+["m","Qual canal combina com produtos de alta complexidade técnica, como serviços financeiros e B2B?","Canais escritos, mídias de prestígio ou defensores (venda consultiva)","Vídeos curtos de impacto visual, como Reels","Outdoors em vias de grande circulação","Atmosferas imersivas em lojas de varejo","Complexidade técnica pede canais escritos, mídia de prestígio ou venda consultiva direta."],
+["m","Qual formato combina com produtos de forte apelo visual, como moda, carros e imóveis?","Vídeo (Reels, comerciais de TV) ou atmosferas imersivas","Canais escritos e relatórios técnicos","Links patrocinados com texto curto","E-mail marketing com catálogo em texto","Necessidade de demonstração pede vídeo ou atmosferas imersivas."],
+["m","No funil integrado, quem nutre o cliente com conteúdo e relacionamento (meio)?","A Comunicação Integrada","A Gestão de Mídia","A Gestão de Vendas","A equipe de pós-venda","Meio = Comunicação Integrada: gera relacionamento e confiança."],
+["m","Qual é a vantagem principal da estrutura por Linha de Produtos?","Domínio técnico profundo e venda consultiva de alto valor","Proximidade física e facilidade de atendimento local","Atendimento sob medida para cada perfil de cliente","Eliminação de barreiras geográficas e da ociosidade","Equipes por especialidade dominam categorias complexas."],
+["m","O tempo de resposta ao cliente digital é uma métrica de…","esforço","resultado","impacto","faturamento","Métricas de esforço medem o volume operacional e o comportamento do vendedor."],
+["m","Qual par traz apenas métricas de resultado?","Faturamento omnichannel e taxa de conversão dos links","Mensagens ativas no WhatsApp e taxa de conversão","Tempo de resposta e ticket médio","Mensagens ativas e tempo de resposta ao cliente","Resultado = faturamento, conversão e ticket médio; mensagens e tempo de resposta são esforço."],
+["m","Segundo a Aula 7, o que a sinergia de canais pede de um outdoor ou anúncio impresso?","Conter um QR Code ou ponto de contato digital imediato","Repetir a mensagem na TV no mesmo horário","Trazer o preço e o endereço da loja mais próxima","Ser veiculado apenas em regiões de alta renda","Sinergia: o anúncio físico deve levar ao digital de forma imediata."],
+["d","A quantidade de inserções em que uma peça foi ou será veiculada é a…","Frequência","Frequência média","Alcance","Impacto","Frequência = nº de inserções; Frequência média = média de exposições por pessoa impactada."],
+["d","Para calcular a frequência média, a soma das frequências é dividida por…","pessoas impactadas","universo pesquisado","total de inserções","número de veículos usados","Divide-se pelas pessoas impactadas (média aritmética), não pelo universo."],
+["d","Um veículo de massa tem CPM baixíssimo, mas 90% da audiência não tem perfil nem renda para comprar. O que concluir?","Foi desperdício; priorize canais de alta afinidade, mesmo mais caros","Foi eficiente, pois o CPM baixo garante o melhor custo-benefício","Se justifica pelo alcance, que compensa o perfil da audiência","É válido se a frequência subir na mesma mídia","Qualidade do público vale mais que CPM baixo: priorize alta afinidade e concentração do público-alvo."],
+["d","Lançamento de um celular dobrável caro: um anúncio único na TV aberta ou 10 inserções com influenciador de nicho. Qual a melhor?","Influenciador de nicho, pela alta frequência e confiança","Anúncio único na final do futebol, pelo grande alcance","Anúncio único na final da novela, pelo prestígio","As duas têm o mesmo efeito para um produto caro","Produto caro e novo gera desconfiança: exige repetição e explicação de alguém confiável."],
+["d","Avaliações de clientes reais no TripAdvisor e no Google pertencem a qual subcanal?","Canais Sociais","Canais de Especialistas","Canais de Defensores","Atmosferas","Sociais = vizinhos, amigos, família e redes de contatos (boca a boca)."],
+["d","Para Kotler (Marketing 5.0), a tecnologia deve funcionar como…","um copiloto que amplifica a empatia do vendedor humano","um substituto que automatiza todo o atendimento","um painel que só registra o faturamento tardio","um canal exclusivo para clientes corporativos","Copiloto para amplificar empatia, humanização e relacionamento do vendedor."],
+["d","O que a IA e o Big Data analisam para personalizar ofertas (Marketing 6.0)?","Micro-momentos, como cliques, tempo de tela e carrinhos abandonados","Somente o faturamento mensal de cada vendedor","Apenas pesquisas de satisfação respondidas pelos clientes","O volume de inserções feitas em mídia impressa","IA e Big Data analisam micro-momentos para exibir ofertas personalizadas na hora."],
+["d","O que são clusters, no contexto da estrutura por território?","Conjuntos de elementos muito parecidos, reunidos em um mesmo grupo","Filiais físicas com o mesmo gerente e o mesmo estoque","Regiões geográficas atendidas por um único vendedor","Equipes divididas por especialidade em categorias complexas","Cluster (agrupamento) = elementos com características parecidas, reunidos em um grupo."],
+["d","Qual estrutura traz descentralização total, com o vendedor atuando no físico e no digital em tempo real?","Híbrida / Ágil","Por Território Geográfico","Por Linha de Produtos","Por Tipo de Cliente","Híbrida/Ágil elimina barreiras geográficas e a ociosidade da equipe."],
+["d","Qual estrutura usa CRM e Big Data para separar jornadas de compra automáticas?","Por Tipo de Cliente","Por Território Geográfico","Por Linha de Produtos","Híbrida / Ágil","Tipo de Cliente: segmenta perfis (ex.: varejo vs. corporativo) com CRM e Big Data."],
+["d","No caso Magazine Luiza, qual era o problema da estrutura tradicional por território?","Tempo ocioso em dias fracos e concorrência com o e-commerce da marca","Falta de lojas físicas nas regiões de maior consumo","Ausência total de um aplicativo próprio para os clientes","Alta rotatividade de vendedores por falta de comissão","Vendedores ficavam ociosos com a loja vazia e concorriam com o e-commerce da própria marca."],
+["d","Pelo Princípio do Controle (Las Casas), a avaliação da força de vendas compara o real com o planejado e se divide entre…","atividades (esforço) e resultados (saídas)","metas (entradas) e orçamento (saídas)","território (local) e produto (linha)","alcance (topo) e conversão (base)","Padrões claros: atividades medem o esforço; resultados medem as saídas."],
+["d","Para o consumidor metamoderno, como o ponto de venda físico deve ser visto?","Um hub de relacionamento e experiência humana","Um depósito regional de produtos para entrega","Um canal concorrente do e-commerce da marca","Um espaço só de retirada de pedidos online","O PDV deixa de ser só um depósito regional e vira hub de relacionamento e experiência."],
+["d","Esclarecer dúvidas e mitigar resistências do cliente é qual etapa do processo de vendas?","Superação de Objeções","Apresentação do Produto/Serviço","Pré-abordagem e Abordagem","Fechamento","Superação de Objeções = esclarecer dúvidas e mitigar resistências."],
+["d","Qual é a métrica de otimização na viabilidade financeira (Aula 7)?","Cruzar o menor CPM/CPC possível com a maior adequação ao público","Escolher sempre o menor CPM, independentemente do público","Maximizar o alcance total dentro da verba trimestral","Priorizar o canal de maior prestígio, mesmo que custe mais","Otimizar = menor CPM/CPC combinado com a maior taxa de adequação ao público."]
+].map(a=>({l:a[0],t:a[1],c:a[2],w:a.slice(3,6),e:a[6]}));
+let lv='all',sz=15,R=[],i=0,sc=0,log=[];
+const $=document.getElementById('app');
+const sh=a=>{a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const pool=()=>Q.filter(q=>lv=='all'||q.l==lv);
+function home(){
+ $.innerHTML=`<div class="c"><span class="tag">Comunicação, Mídia e Vendas · Aulas 6 a 9</span><h1>Quiz da Prof.ª Silvana Nery</h1><p class="mut">Banco com ${Q.length} questões. A cada rodada eu sorteio um conjunto novo e embaralho as alternativas.</p>
+ <h2>Dificuldade</h2><div class="row">${[['all','Todas'],['f','Fácil'],['m','Médio'],['d','Difícil']].map(([k,n])=>`<button class="${lv==k?'on':''}" onclick="lv='${k}';home()">${n}</button>`).join('')}</div>
+ <h2>Questões por rodada</h2><div class="row">${[10,15,20,0].map(n=>`<button class="${sz==n?'on':''}" onclick="sz=${n};home()">${n||'Todas'}</button>`).join('')}</div>
+ <p class="mut">${pool().length} questões disponíveis nesse filtro.</p><button class="go" onclick="start()">Começar</button></div>`}
+function start(){R=sh(pool());if(sz)R=R.slice(0,sz);R=R.map(q=>({...q,o:sh([q.c,...q.w])}));i=0;sc=0;log=[];show()}
+function show(){const q=R[i];
+ $.innerHTML=`<div class="c"><div class="bar"><i style="width:${i/R.length*100}%"></i></div><p class="mut">Questão ${i+1} de ${R.length} · <span class="tag">${N[q.l]}</span></p><h2>${q.t}</h2><div>${q.o.map((x,k)=>`<button class="opt" onclick="ans(${k})">${x}</button>`).join('')}</div><div id="f"></div></div>`}
+function ans(k){const q=R[i],ok=q.o[k]==q.c;sc+=ok?1:0;log.push({q,ok,p:q.o[k]});
+ document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(q.o[j]==q.c)b.classList.add('ok');else if(j==k)b.classList.add('no')});
+ document.getElementById('f').innerHTML=`<div class="fb"><b>${ok?'Mandou bem! ✅':'Ops, não foi dessa vez ❌'}</b><br>${q.e}</div><p><button class="go" onclick="nxt()">${i+1<R.length?'Próxima':'Ver resultado'}</button></p>`}
+function nxt(){i++;i<R.length?show():end()}
+function end(){const pc=Math.round(sc/R.length*100),by={};
+ log.forEach(x=>{const b=by[x.q.l]=by[x.q.l]||[0,0];b[1]++;b[0]+=x.ok?1:0});
+ const bad=log.filter(x=>!x.ok);
+ $.innerHTML=`<div class="c"><div class="big">${sc}/${R.length} · ${pc}%</div><p>${pc>=80?'Mandou muito bem!':pc>=60?'Tá no caminho, dá uma olhada nos erros abaixo.':'Vale revisar o conteúdo e tentar de novo.'}</p><div class="row">${Object.keys(by).map(k=>`<span class="tag">${N[k]}: ${by[k][0]}/${by[k][1]}</span>`).join('')}</div><p class="row"><button class="go" onclick="start()">Jogar de novo (novo sorteio)</button><button onclick="home()">Mudar filtro</button></p></div>
+ ${bad.length?`<div class="c"><h2>Pra revisar (${bad.length})</h2>${bad.map(x=>`<p><b>${x.q.t}</b><br><span style="color:var(--no)">Você marcou: ${x.p}</span><br><span style="color:var(--ok)">Certa: ${x.q.c}</span><br><span class="mut">${x.q.e}</span></p>`).join('<hr>')}</div>`:'<div class="c"><h2>Gabaritou! 🎉</h2></div>'}`}
+home();
+</script></body></html>
